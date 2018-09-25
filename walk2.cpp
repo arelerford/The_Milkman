@@ -52,6 +52,11 @@ void init();
 void physics();
 void render();
 
+void extern show_credits_justin (Rect r, int x, int y);
+void extern show_austin();
+void extern show_isacc (Rect r, int x, int y);
+void extern show_credits ();
+
 //-----------------------------------------------------------------------------
 //Setup timers
 class Timers {
@@ -98,6 +103,8 @@ public:
 
 class Global {
 public:
+    bool displayCredits;
+
 	unsigned char keys[65536];
 	int xres, yres;
 	int movie, movieStep;
@@ -117,6 +124,8 @@ public:
 		logClose();
 	}
 	Global() {
+        displayCredits = false;
+
 		logOpen();
 		camera[0] = camera[1] = 0.0;
 		movie=0;
@@ -597,6 +606,8 @@ int checkKeys(XEvent *e)
 		case XK_Escape:
 			return 1;
 			break;
+        case XK_c:
+            gl.displayCredits = !gl.displayCredits;
 	}
 	return 0;
 }
@@ -918,6 +929,14 @@ void render(void)
 	ggprint8b(&r, 16, c, "right arrow -> walk right");
 	ggprint8b(&r, 16, c, "left arrow  <- walk left");
 	ggprint8b(&r, 16, c, "frame: %i", gl.walkFrame);
+    
+    if (gl.displayCredits) {
+        show_credits();
+        show_credits_justin(r, 16, c);
+        show_isacc(r, 16, c);
+        show_austin();
+    }
+
 	if (gl.movie) {
 		screenCapture();
 	}
