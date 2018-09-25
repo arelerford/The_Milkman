@@ -53,9 +53,9 @@ void physics();
 void render();
 
 void extern show_credits_justin (Rect r, int x, int y);
-void extern show_austin();
-void extern show_isacc (Rect r, int x, int y);
-void extern show_credits ();
+void extern show_austin(Rect r, int x, int y);
+void extern show_isaac (Rect r, int x, int y);
+void extern show_credits (Rect r, int x, int y);
 
 //-----------------------------------------------------------------------------
 //Setup timers
@@ -931,10 +931,10 @@ void render(void)
 	ggprint8b(&r, 16, c, "frame: %i", gl.walkFrame);
     
     if (gl.displayCredits) {
-        show_credits();
+        show_credits(r,16,c);
         show_credits_justin(r, 16, c);
-        show_isacc(r, 16, c);
-        show_austin();
+        show_isaac(r, 16, c);
+        show_austin(r,16,c);
     }
 
 	if (gl.movie) {
