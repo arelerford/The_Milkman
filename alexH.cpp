@@ -10,7 +10,7 @@ using namespace std;
 //extern checkKeys(XEvent *e);
 
 
-void show_credits(Rect r, int x, int y);
+void show_credits(Rect r, int x, int y)
 {
 	ggprint8b(&r, x, y, "Alex Hamilton"); 
 }
