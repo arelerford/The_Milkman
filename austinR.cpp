@@ -8,9 +8,11 @@ extern void physics();
 extern void render();
 void show_austin();
 
-void show_austin(int x, int y, Rect r) 
+void show_austin(Rect r, int x, int y) 
 {
-    ggprint8b(&r, 16, 0x00ff0000, "Austin Relerford");
+    r.bot = 600 - 20;
+	r.left = 10;
+	r.center = 0;
 
-
+    ggprint8b(&r, x, y, "Austin Relerford");
 }

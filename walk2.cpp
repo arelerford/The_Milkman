@@ -732,13 +732,14 @@ void render(void)
 	glClear(GL_COLOR_BUFFER_BIT);
 	
 	unsigned int c = 0x00ffff44;
-	if (gl.displayCredits) {
+	/*if (gl.displayCredits) {
+            
         	show_credits(r,200,c);
         	show_credits_justin(r, 16, c);
         	show_isaac(r, 16, c);
         	show_austin(r,16,c);
     		return;
-	}
+	}*/
 	
 	float cx = gl.xres/2.0;
 	float cy = gl.yres/2.0;
@@ -940,12 +941,23 @@ void render(void)
 	ggprint8b(&r, 16, c, "left arrow  <- walk left");
 	ggprint8b(&r, 16, c, "frame: %i", gl.walkFrame);
     
-   /* if (gl.displayCredits) {
-        show_credits(r,16,c);
-        show_credits_justin(r, 16, c);
-        show_isaac(r, 16, c);
-        show_austin(r,16,c);
-    }*/
+   if (gl.displayCredits) {
+        glColor3f(1.0, 1.0, 1.0);
+
+        glBegin(GL_QUADS);
+        glTexCoord2f(0, 0); glVertex3f(0, 0, 0);
+        glTexCoord2f(0, 1); glVertex3f(0, 1000, 0);
+        glTexCoord2f(1, 1); glVertex3f(1000, 1000, 0);
+        glTexCoord2f(1, 0); glVertex3f(1000, 0, 0);
+        glEnd();
+
+        glColor3f(0, 0, 0);
+
+        show_credits(r,16, 0x00000000);
+        show_credits_justin(r, 16, 0x00000000);
+        show_isaac(r, 16, 0x00000000);
+        show_austin(r,16,0x00000000);
+    }
 
 	if (gl.movie) {
 		screenCapture();

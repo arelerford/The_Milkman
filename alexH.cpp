@@ -12,5 +12,9 @@ using namespace std;
 
 void show_credits(Rect r, int x, int y)
 {
+    r.bot = 600 - 30;
+	r.left = 10;
+	r.center = 0;
+
 	ggprint8b(&r, x, y, "Alex Hamilton"); 
 }
