@@ -12,8 +12,5 @@ using namespace std;
 
 void show_credits(Rect r, int x, int y);
 {
-    //	r.bot = gl.yres - 20;
-    //	r.left = 10;
-//	r.center = 0;
-	ggprint8b(&r, 16, c, "Alex Hamilton"); 
+	ggprint8b(&r, x, y, "Alex Hamilton"); 
 }
