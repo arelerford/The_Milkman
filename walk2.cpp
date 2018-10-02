@@ -58,7 +58,7 @@ extern void show_isaac (Rect r, int x, int y);
 extern void show_credits (Rect r, int x, int y);  
       
 extern void showIsaacPic(int, int, GLuint);        
-//extern void show_justin_image(int, int, GLuint);
+extern void show_justin_image(int, int, GLuint);
 //extern void show_AlexPicture(int, int, GLuint);
 
 //-----------------------------------------------------------------------------
