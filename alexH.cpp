@@ -32,7 +32,7 @@ void show_AlexPicture(int x, int y, GLuint texid)
         glColor3ub(255, 255, 255);
         int wid=40;
         glPushMatrix();
-        glTranslatef(100,500,0);
+        glTranslatef(x, y, 0);
         glBindTexture(GL_TEXTURE_2D, texid);
         glBegin(GL_QUADS);
                 glTexCoord2f(0.0f, 1.0f); glVertex2i(-wid, -wid);
