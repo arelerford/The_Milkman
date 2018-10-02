@@ -28,7 +28,7 @@ void show_justin_image (int x, int y, GLuint textid)
         glTexCoord2f(0.0f, 1.0f); glVertex2i (-wid, -wid);
         glTexCoord2f(0.0f, 0.0f); glVertex2i (-wid, wid);
         glTexCoord2f(1.0f, 0.0f); glVertex2i (wid, wid);
-        glTexCoord2f(1.0f, 1.0f); glVertex2i (-wid, wid);
+        glTexCoord2f(1.0f, 1.0f); glVertex2i (wid, -wid);
     glEnd();
 
     glPopMatrix();

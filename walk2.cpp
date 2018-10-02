@@ -55,11 +55,11 @@ void render();
 extern void show_credits_justin (Rect r, int x, int y);
 extern void show_austin(Rect r, int x, int y);
 extern void show_isaac (Rect r, int x, int y);
-extern void show_credits (Rect r, int x, int y);  
+extern void show_AlexCredits (Rect r, int x, int y);  
       
-extern void showIsaacPic(int, int, GLuint);        
+//extern void showIsaacPic(int, int, GLuint);        
 extern void show_justin_image(int, int, GLuint);
-//extern void show_AlexPicture(int, int, GLuint);
+extern void show_AlexPicture(int, int, GLuint);
 
 //-----------------------------------------------------------------------------
 //Setup timers
@@ -109,6 +109,7 @@ public:
 class Global {
 public:
 	GLuint dogTexture;
+    GLuint catTexture;
     bool displayCredits;
 	unsigned char keys[65536];
 	int xres, yres;
@@ -344,11 +345,12 @@ public:
 			unlink(ppmname);
 	}
 };
-Image img[4] = {
+Image img[5] = {
 "./images/walk.gif",
 "./images/exp.png",
 "./images/exp44.png",
-"./images/resize_dog.jpg" };
+"./images/dog.jpg",
+"./images/justinS.jpg" };
 
 
 int main(void)
@@ -405,6 +407,7 @@ void initOpengl(void)
 {
 	//OpenGL initialization
 	glGenTextures(1, &gl.dogTexture);
+    glGenTextures(1, &gl.catTexture);
 	glViewport(0, 0, gl.xres, gl.yres);
 	///////////////////////////////////////////////////////////////////////////////////////////////////
 	// dog texture
@@ -415,6 +418,14 @@ void initOpengl(void)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexImage2D(GL_TEXTURE_2D, 0, 3, wDog, hDog, 0,
 		GL_RGB, GL_UNSIGNED_BYTE, img[3].data);
+
+    int wCat = img[4].width;
+    int hCat = img[4].height;
+    glBindTexture(GL_TEXTURE_2D, gl.catTexture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexImage2D(GL_TEXTURE_2D, 0, 3, wCat, hCat, 0,
+		GL_RGB, GL_UNSIGNED_BYTE, img[4].data);
 	////////////////////////////////////////////////////////////////////////////
 	//Initialize matrices
 	glMatrixMode(GL_PROJECTION); glLoadIdentity();
@@ -970,13 +981,13 @@ void render(void)
 
         glColor3f(0, 0, 0);
 
-        show_credits(r,16, 0x00000000);
+        show_AlexCredits(r,16, 0x00000000);
         show_credits_justin(r, 16, 0x00000000);
         show_isaac(r, 16, 0x00000000);
         show_austin(r,16,0x00000000);
 
-		showIsaacPic(300, 480, gl.dogTexture);    
-		show_justin_image(300, 440, gl.dogTexture);
+		//showIsaacPic(300, 480, gl.dogTexture);    
+		show_justin_image(300, 440, gl.catTexture);
 		show_AlexPicture(300, 520, gl.dogTexture);
 		//show_austin_pic(300, 560, gl.dogTexture);
 		//
