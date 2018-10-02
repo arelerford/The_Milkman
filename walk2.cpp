@@ -52,10 +52,11 @@ void init();
 void physics();
 void render();
 
-void extern show_credits_justin (Rect r, int x, int y);
-void extern show_austin(Rect r, int x, int y);
-void extern show_isaac (Rect r, int x, int y);
-void extern show_credits (Rect r, int x, int y);
+extern void show_credits_justin (Rect r, int x, int y);
+extern void show_austin(Rect r, int x, int y);
+extern void show_isaac (Rect r, int x, int y);
+extern void show_credits (Rect r, int x, int y);        
+extern void showIsaacPic(int, int, GLuint);
 
 //-----------------------------------------------------------------------------
 //Setup timers
@@ -101,10 +102,11 @@ public:
 	}
 };
 
+
 class Global {
 public:
+	GLuint dogTexture;
     bool displayCredits;
-
 	unsigned char keys[65536];
 	int xres, yres;
 	int movie, movieStep;
@@ -125,7 +127,6 @@ public:
 	}
 	Global() {
         displayCredits = false;
-
 		logOpen();
 		camera[0] = camera[1] = 0.0;
 		movie=0;
@@ -340,10 +341,11 @@ public:
 			unlink(ppmname);
 	}
 };
-Image img[3] = {
+Image img[4] = {
 "./images/walk.gif",
 "./images/exp.png",
-"./images/exp44.png" };
+"./images/exp44.png",
+"./images/resize_dog.jpg" };
 
 
 int main(void)
@@ -399,7 +401,18 @@ unsigned char *buildAlphaData(Image *img)
 void initOpengl(void)
 {
 	//OpenGL initialization
+	glGenTextures(1, &gl.dogTexture);
 	glViewport(0, 0, gl.xres, gl.yres);
+	///////////////////////////////////////////////////////////////////////////////////////////////////
+	// dog texture
+	int wDog = img[3].width;
+	int hDog = img[3].height;
+	glBindTexture(GL_TEXTURE_2D, gl.dogTexture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexImage2D(GL_TEXTURE_2D, 0, 3, wDog, hDog, 0,
+		GL_RGB, GL_UNSIGNED_BYTE, img[3].data);
+	////////////////////////////////////////////////////////////////////////////
 	//Initialize matrices
 	glMatrixMode(GL_PROJECTION); glLoadIdentity();
 	glMatrixMode(GL_MODELVIEW); glLoadIdentity();
@@ -942,6 +955,7 @@ void render(void)
 	ggprint8b(&r, 16, c, "frame: %i", gl.walkFrame);
     
    if (gl.displayCredits) {
+	   
         glColor3f(1.0, 1.0, 1.0);
 
         glBegin(GL_QUADS);
@@ -957,6 +971,10 @@ void render(void)
         show_credits_justin(r, 16, 0x00000000);
         show_isaac(r, 16, 0x00000000);
         show_austin(r,16,0x00000000);
+
+		showIsaacPic(200, 200, gl.dogTexture);
+		//
+
     }
 
 	if (gl.movie) {
