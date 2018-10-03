@@ -57,7 +57,7 @@ extern void show_austin(Rect r, int x, int y);
 extern void show_isaac (Rect r, int x, int y);
 extern void show_AlexCredits (Rect r, int x, int y);  
       
-//extern void showIsaacPic(int, int, GLuint);        
+extern void showIsaacPic(int, int, GLuint);        
 extern void show_justin_image(int, int, GLuint);
 extern void show_AlexPicture(int, int, GLuint);
 
@@ -108,8 +108,12 @@ public:
 
 class Global {
 public:
+	// Credit Picute Texture Variables
 	GLuint dogTexture;
     GLuint catTexture;
+    //GLuint  ;
+    //GLuint  ;
+    
     bool displayCredits;
 	unsigned char keys[65536];
 	int xres, yres;
@@ -350,7 +354,9 @@ Image img[5] = {
 "./images/exp.png",
 "./images/exp44.png",
 "./images/dog.jpg",
-"./images/justinS.jpg" };
+"./images/justinS.jpg"
+/* Alex Image
+   Austin Image */};
 
 
 int main(void)
@@ -410,7 +416,7 @@ void initOpengl(void)
     glGenTextures(1, &gl.catTexture);
 	glViewport(0, 0, gl.xres, gl.yres);
 	///////////////////////////////////////////////////////////////////////////////////////////////////
-	// dog texture
+	// Credit Picture Texture Initialization
 	int wDog = img[3].width;
 	int hDog = img[3].height;
 	glBindTexture(GL_TEXTURE_2D, gl.dogTexture);
@@ -426,6 +432,8 @@ void initOpengl(void)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexImage2D(GL_TEXTURE_2D, 0, 3, wCat, hCat, 0,
 		GL_RGB, GL_UNSIGNED_BYTE, img[4].data);
+	
+	
 	////////////////////////////////////////////////////////////////////////////
 	//Initialize matrices
 	glMatrixMode(GL_PROJECTION); glLoadIdentity();
@@ -986,11 +994,10 @@ void render(void)
         show_isaac(r, 16, 0x00000000);
         show_austin(r,16,0x00000000);
 
-		//showIsaacPic(300, 480, gl.dogTexture);    
-		show_justin_image(300, 440, gl.catTexture);
-		show_AlexPicture(300, 520, gl.dogTexture);
+		showIsaacPic(300, 400, gl.dogTexture);    
+		show_justin_image(300, 320, gl.catTexture);
+		show_AlexPicture(300, 480, gl.dogTexture);
 		//show_austin_pic(300, 560, gl.dogTexture);
-		//
 
     }
 
