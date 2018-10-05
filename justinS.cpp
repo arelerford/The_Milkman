@@ -3,6 +3,10 @@
 
 #include <GL/glx.h>
 #include "fonts.h"
+
+// TODO: Modifie to allow for offsets also look at paramters for
+//       ggprint8b(Rect, int, int, string) and what they do.
+//       ggprint8b(Rect, ,color, string to draw) 
 void show_credits_justin(Rect r, int x, int y)
 {
     r.bot = 600 - 50;
@@ -12,6 +16,7 @@ void show_credits_justin(Rect r, int x, int y)
     ggprint8b(&r, x, y, "Justin S.");
 }
 
+// TODO: Animate image.
 void show_justin_image (int x, int y, GLuint textid)
 {
     glColor3f (1.0f, 1.0f, 1.0f);
