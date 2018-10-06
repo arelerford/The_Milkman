@@ -52,15 +52,6 @@ void init();
 void physics();
 void render();
 
-extern void show_credits_justin (Rect r, int x, int y);
-extern void show_austin(Rect r, int x, int y);
-extern void show_isaac (Rect r, int x, int y);
-extern void show_AlexCredits (Rect r, int x, int y);  
-      
-extern void showIsaacPic(int, int, GLuint);        
-extern void show_justin_image(int, int, GLuint);
-extern void show_AlexPicture(int, int, GLuint);
-
 //-----------------------------------------------------------------------------
 //Setup timers
 class Timers {
@@ -964,7 +955,7 @@ void render(void)
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glDisable(GL_ALPHA_TEST);
 	}
-	//unsigned int c = 0x00ffff44;
+	// unsigned int c = 0x00ffff44;
 	r.bot = gl.yres - 20;
 	r.left = 10;
 	r.center = 0;
@@ -977,27 +968,47 @@ void render(void)
 	ggprint8b(&r, 16, c, "frame: %i", gl.walkFrame);
     
    if (gl.displayCredits) {
+   		// External Files
+
+		extern void show_credits_justin (Rect*);
+		extern void show_austin(Rect*);
+		extern void show_isaac (Rect*);
+		extern void show_AlexCredits (Rect*);
+      
+		extern void showIsaacPic(int, int, GLuint);        
+		extern void show_justin_image(int, int, GLuint);
+		extern void show_AlexPicture(int, int, GLuint);
 	   
-        glColor3f(1.0, 1.0, 1.0);
+
+        glColor3f(255, 255, 255);
 
         glBegin(GL_QUADS);
-        glTexCoord2f(0, 0); glVertex3f(0, 0, 0);
-        glTexCoord2f(0, 1); glVertex3f(0, 1000, 0);
-        glTexCoord2f(1, 1); glVertex3f(1000, 1000, 0);
-        glTexCoord2f(1, 0); glVertex3f(1000, 0, 0);
+	        glTexCoord2f(0, 0); glVertex2f(0, 0);
+	        glTexCoord2f(0, 1); glVertex2f(0, gl.yres);
+	        glTexCoord2f(1, 1); glVertex2f(gl.xres, gl.yres);
+	        glTexCoord2f(1, 0); glVertex2f(gl.xres, 0);
         glEnd();
 
         glColor3f(0, 0, 0);
 
-        show_AlexCredits(r,16, 0x00000000);
-        show_credits_justin(r, 16, 0x00000000);
-        show_isaac(r, 16, 0x00000000);
-        show_austin(r,16,0x00000000);
 
-		showIsaacPic(300, 400, gl.dogTexture);    
-		show_justin_image(300, 320, gl.catTexture);
-		show_AlexPicture(300, 480, gl.dogTexture);
-		//show_austin_pic(300, 560, gl.dogTexture);
+        r.bot = gl.yres - 80;
+        r.left = gl.xres / 3;
+        int pic_column = 2 * r.left;
+
+		show_AlexPicture(pic_column, r.bot, gl.dogTexture);
+        show_AlexCredits(&r);
+        
+		show_justin_image(pic_column, r.bot, gl.catTexture);
+        show_credits_justin(&r);
+
+		showIsaacPic(pic_column, r.bot, gl.dogTexture);    
+        show_isaac(&r);
+
+		//show_austin_pic(pic_column, r.bot, gl.dogTexture);
+        show_austin(&r);
+
+
 
     }
 
