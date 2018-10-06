@@ -967,7 +967,7 @@ void render(void)
 	ggprint8b(&r, 16, c, "left arrow  <- walk left");
 	ggprint8b(&r, 16, c, "frame: %i", gl.walkFrame);
     
-   if (gl.displayCredits) {
+	if (gl.displayCredits) {
 		// External Files
 
 		extern void show_credits_justin (Rect*);
