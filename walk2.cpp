@@ -969,7 +969,6 @@ void render(void)
     
 	if (gl.displayCredits) {
 		// External Files
-
 		extern void show_credits_justin (Rect*);
 		extern void show_austin(Rect*);
 		extern void show_isaac_name(Rect*);
@@ -979,8 +978,6 @@ void render(void)
 		extern void show_justin_image(int, int, GLuint);
 		extern void show_AlexPicture(int, int, GLuint);
 		// extern void show_austin_pic(int, int, GLuint);
-
-
 
 		glColor3f(255, 255, 255);
 
@@ -992,7 +989,6 @@ void render(void)
 		glEnd();
 
 		glColor3f(0, 0, 0);
-
 
 		r.bot = gl.yres - 80;
 		r.left = gl.xres / 3;
