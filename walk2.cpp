@@ -968,48 +968,45 @@ void render(void)
 	ggprint8b(&r, 16, c, "frame: %i", gl.walkFrame);
     
    if (gl.displayCredits) {
-   		// External Files
+		// External Files
 
 		extern void show_credits_justin (Rect*);
 		extern void show_austin(Rect*);
 		extern void show_isaac (Rect*);
 		extern void show_AlexCredits (Rect*);
-      
+
 		extern void showIsaacPic(int, int, GLuint);        
 		extern void show_justin_image(int, int, GLuint);
 		extern void show_AlexPicture(int, int, GLuint);
-	   
-
-        glColor3f(255, 255, 255);
-
-        glBegin(GL_QUADS);
-	        glTexCoord2f(0, 0); glVertex2f(0, 0);
-	        glTexCoord2f(0, 1); glVertex2f(0, gl.yres);
-	        glTexCoord2f(1, 1); glVertex2f(gl.xres, gl.yres);
-	        glTexCoord2f(1, 0); glVertex2f(gl.xres, 0);
-        glEnd();
-
-        glColor3f(0, 0, 0);
 
 
-        r.bot = gl.yres - 80;
-        r.left = gl.xres / 3;
-        int pic_column = 2 * r.left;
+		glColor3f(255, 255, 255);
+
+		glBegin(GL_QUADS);
+			glTexCoord2f(0, 0); glVertex2f(0, 0);
+			glTexCoord2f(0, 1); glVertex2f(0, gl.yres);
+			glTexCoord2f(1, 1); glVertex2f(gl.xres, gl.yres);
+			glTexCoord2f(1, 0); glVertex2f(gl.xres, 0);
+		glEnd();
+
+		glColor3f(0, 0, 0);
+
+
+		r.bot = gl.yres - 80;
+		r.left = gl.xres / 3;
+		int pic_column = 2 * r.left;
 
 		show_AlexPicture(pic_column, r.bot, gl.dogTexture);
-        show_AlexCredits(&r);
-        
+		show_AlexCredits(&r);
+
 		show_justin_image(pic_column, r.bot, gl.catTexture);
-        show_credits_justin(&r);
+		show_credits_justin(&r);
 
 		showIsaacPic(pic_column, r.bot, gl.dogTexture);    
-        show_isaac(&r);
+		show_isaac(&r);
 
 		//show_austin_pic(pic_column, r.bot, gl.dogTexture);
-        show_austin(&r);
-
-
-
+		show_austin(&r);
     }
 
 	if (gl.movie) {
