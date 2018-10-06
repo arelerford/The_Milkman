@@ -972,12 +972,14 @@ void render(void)
 
 		extern void show_credits_justin (Rect*);
 		extern void show_austin(Rect*);
-		extern void show_isaac (Rect*);
+		extern void show_isaac_name(Rect*);
 		extern void show_AlexCredits (Rect*);
 
-		extern void showIsaacPic(int, int, GLuint);        
+		extern void show_isaac_pic(int, int, GLuint);        
 		extern void show_justin_image(int, int, GLuint);
 		extern void show_AlexPicture(int, int, GLuint);
+		// extern void show_austin_pic(int, int, GLuint);
+
 
 
 		glColor3f(255, 255, 255);
@@ -996,17 +998,17 @@ void render(void)
 		r.left = gl.xres / 3;
 		int pic_column = 2 * r.left;
 
-		show_AlexPicture(pic_column, r.bot, gl.dogTexture);
-		show_AlexCredits(&r);
+		// show_AlexPicture(pic_column, r.bot + 10, gl.dogTexture);
+		// show_AlexCredits(&r);
 
-		show_justin_image(pic_column, r.bot, gl.catTexture);
-		show_credits_justin(&r);
+		show_isaac_pic(pic_column, r.bot + 10, gl.dogTexture);    
+		show_isaac_name(&r);
 
-		showIsaacPic(pic_column, r.bot, gl.dogTexture);    
-		show_isaac(&r);
+		//show_austin_pic(pic_column, r.bot + 10, gl.dogTexture);
+		//show_austin(&r);
 
-		//show_austin_pic(pic_column, r.bot, gl.dogTexture);
-		show_austin(&r);
+		// show_justin_image(pic_column, r.bot + 10, gl.catTexture);
+		// show_credits_justin(&r);
     }
 
 	if (gl.movie) {
