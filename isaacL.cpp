@@ -1,12 +1,12 @@
 #include "fonts.h"
 #include <GL/glx.h>
 
-void show_isaac(Rect *r) 
+void show_isaac_name(Rect *r) 
 {	
 	ggprint16(r, 150, 0, "Isaac Lara");
 }
 
-void showIsaacPic(int x, int y, GLuint textid)
+void show_isaac_pic(int x, int y, GLuint textid)
 {
     glColor3f (1.0f, 1.0f, 1.0f);
     
