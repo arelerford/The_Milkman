@@ -1,14 +1,12 @@
 //Alex Hamilton
-//Milkman Credits
+//Last modified: October 7th
+//Purpose: Show Milkman Alex Credits and Picture
 #include <iostream>
 #include "fonts.h"
 #include <GL/glx.h>
 #include <math.h>
 using namespace std;
 
-//extern void show_credits();
-//extern void render(void);
-//extern checkKeys(XEvent *e);
 
 
 void show_AlexCredits(Rect *r)
@@ -18,17 +16,20 @@ void show_AlexCredits(Rect *r)
 
 void show_AlexPicture(int x, int y, GLuint texid)
 {
-//show Alex picture (dog)
+	//show Alex picture and animation (dog)
 	static float angle = 0.0f;
-	float fx = (float)x;
-	float fy = (float)y;
-	fx += sin(angle) * 10.0f;
-	fy += sin(angle) * 10.0f;
+	static float angle2 = 0.0f;
+	static float fx = 0.0f;
+	angle += 0.2;
+	fx = sin(angle);
+	//fx += sin(angle) * 10.0f;
 	angle += 0.2f;	
         glColor3ub(255, 255, 255);
         int wid=40;
         glPushMatrix();
-        glTranslatef(x, y, 0);
+        glTranslatef(x + (int)(fx*20.0), y, 0);
+	glRotatef(angle2, 0.0f, 0.0f, 1.0f);
+	angle2 += 50;
         glBindTexture(GL_TEXTURE_2D, texid);
         glBegin(GL_QUADS);
                 glTexCoord2f(0.0f, 1.0f); glVertex2i(-wid, -wid);
@@ -37,6 +38,5 @@ void show_AlexPicture(int x, int y, GLuint texid)
                 glTexCoord2f(1.0f, 1.0f); glVertex2i(wid, -wid);
         glEnd();
         glPopMatrix();
-        ////////////////
 	
 }
