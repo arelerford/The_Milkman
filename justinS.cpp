@@ -7,13 +7,9 @@
 // TODO: Modifie to allow for offsets also look at paramters for
 //       ggprint8b(Rect, int, int, string) and what they do.
 //       ggprint8b(Rect, ,color, string to draw) 
-void show_credits_justin(Rect r, int x, int y)
+void show_credits_justin(Rect *r)
 {
-    r.bot = 600 - 50;
-	r.left = 10;
-	r.center = 0;
-
-    ggprint8b(&r, x, y, "Justin S.");
+    ggprint16(r, 150, 0, "Justin S.");
 }
 
 // TODO: Animate image.

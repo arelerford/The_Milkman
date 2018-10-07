@@ -994,8 +994,8 @@ void render(void)
 		r.left = gl.xres / 3;
 		int pic_column = 2 * r.left;
 
-		// show_AlexPicture(pic_column, r.bot + 10, gl.dogTexture);
-		// show_AlexCredits(&r);
+		show_AlexPicture(pic_column, r.bot + 10, gl.dogTexture);
+		show_AlexCredits(&r);
 
 		show_isaac_pic(pic_column, r.bot + 10, gl.dogTexture);    
 		show_isaac_name(&r);
@@ -1003,8 +1003,8 @@ void render(void)
 		show_austin_pic(pic_column, r.bot + 10, gl.dogTexture);
 		show_austin(&r);
 
-		// show_justin_image(pic_column, r.bot + 10, gl.catTexture);
-		// show_credits_justin(&r);
+		show_justin_image(pic_column, r.bot + 10, gl.catTexture);
+		show_credits_justin(&r);
     }
 
 	if (gl.movie) {

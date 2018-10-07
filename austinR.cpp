@@ -16,7 +16,7 @@ void show_austin();
 
 void show_austin(Rect *r)
 {
-    ggprint8b(r, 150, 0, "Austin Relerford");
+    ggprint16(r, 150, 0, "Austin Relerford");
 }
 
 void show_austin_pic (int x, int y, GLuint textid)

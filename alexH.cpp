@@ -11,13 +11,9 @@ using namespace std;
 //extern checkKeys(XEvent *e);
 
 
-void show_AlexCredits(Rect r, int x, int y)
+void show_AlexCredits(Rect *r)
 {
-        r.bot = 600 - 30;
-	r.left = 10;
-	r.center = 0;
-
-	ggprint8b(&r, x, y, "Alex Hamilton"); 
+        ggprint16(r, 150, 0, "Alex Hamilton"); 
 }
 
 void show_AlexPicture(int x, int y, GLuint texid)
