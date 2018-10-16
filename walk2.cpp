@@ -46,7 +46,7 @@ const float gravity = -0.2f;
 
 //function prototypes
 void initOpengl();
-void checkMouse(XEvent *e);
+int checkMouse(XEvent *e);
 int checkKeys(XEvent *e);
 void init();
 void physics();
@@ -564,28 +564,33 @@ void init() {
 
 }
 
-void checkMouse(XEvent *e)
+int checkMouse(XEvent *e)
 {
 	//printf("checkMouse()...\n"); fflush(stdout);
 	//Did the mouse move?
 	//Was a mouse button clicked?
 	static int savex = 0;
 	static int savey = 0;
+	int i,x,y;
+	int lbutton=0;
 	//
 	if (e->type != ButtonRelease && e->type != ButtonPress &&
 			e->type != MotionNotify)
-		return;
+		return 0;
 	if (e->type == ButtonRelease) {
-		return;
+		return 0;
 	}
 	if (e->type == ButtonPress) {
 		if (e->xbutton.button==1) {
+		    	lbutton = 1;
 			//Left button is down
 		}
 		if (e->xbutton.button==3) {
 			//Right button is down
 		}
 	}
+	x = e->xbutton.x;
+	y = e->xbutton.y;
 	if (e->type == MotionNotify) {
 		if (savex != e->xbutton.x || savey != e->xbutton.y) {
 			//Mouse moved
@@ -593,6 +598,29 @@ void checkMouse(XEvent *e)
 			savey = e->xbutton.y;
 		}
 	}
+	for (i=0; i<gl.nbuttons; i++) {
+                gl.button[i].over=0;
+                if (x >= gl.button[i].r.left &&
+                        x <= gl.button[i].r.right &&
+                        y >= gl.button[i].r.bot &&
+                        y <= gl.button[i].r.top) {
+                        gl.button[i].over=1;
+                        if (gl.button[i].over) {
+                                if (lbutton) {
+                                        switch (i) {
+                                              /* case 0: 
+           						gl.displayCredits = !gl.displayCredits;
+                                                        break; */
+                                                case 1:
+						    	printf("Credits was clicked!\n"); //to tell if it's working
+           						gl.displayCredits = !gl.displayCredits;
+							return 1;
+                                        }
+                                }
+                        }
+                }
+        }
+		return 0;
 }
 
 void screenCapture()
@@ -695,8 +723,8 @@ int checkKeys(XEvent *e)
 		case XK_Escape:
 			return 1;
 			break;
-        case XK_c:
-            gl.displayCredits = !gl.displayCredits;
+         case XK_c:
+           gl.displayCredits = !gl.displayCredits;
 	}
 	return 0;
 }
