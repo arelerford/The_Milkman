@@ -76,7 +76,19 @@ public:
 	}
 } timers;
 //-----------------------------------------------------------------------------
-
+//buttons
+#define MAXBUTTONS 4
+typedef struct t_button{
+	Rect r;
+        char text[32];
+        int over;
+        int down;
+        int click;
+        float color[3];
+        float dcolor[3];
+        unsigned int text_color;
+} Button;
+	
 class Image;
 
 class Sprite {
@@ -104,7 +116,8 @@ public:
     GLuint catTexture;
     //GLuint  ;
     //GLuint  ;
-    
+    Button button[MAXBUTTONS];
+    int nbuttons; 
     bool displayCredits;
 	unsigned char keys[65536];
 	int xres, yres;
@@ -498,6 +511,56 @@ void initOpengl(void)
 }
 
 void init() {
+	//initialize buttons...
+        gl.nbuttons=0;
+        //size and position
+        gl.button[gl.nbuttons].r.width = 140;
+        gl.button[gl.nbuttons].r.height = 60;
+        gl.button[gl.nbuttons].r.left = 20;
+        gl.button[gl.nbuttons].r.bot = 320;
+        gl.button[gl.nbuttons].r.right =
+           gl.button[gl.nbuttons].r.left + gl.button[gl.nbuttons].r.width;
+        gl.button[gl.nbuttons].r.top =
+           gl.button[gl.nbuttons].r.bot + gl.button[gl.nbuttons].r.height;
+        gl.button[gl.nbuttons].r.centerx =
+           (gl.button[gl.nbuttons].r.left + gl.button[gl.nbuttons].r.right) / 2;
+        gl.button[gl.nbuttons].r.centery =
+           (gl.button[gl.nbuttons].r.bot + gl.button[gl.nbuttons].r.top) / 2;
+        strcpy(gl.button[gl.nbuttons].text, "Start");
+        gl.button[gl.nbuttons].down = 0;
+        gl.button[gl.nbuttons].click = 0;
+        gl.button[gl.nbuttons].color[0] = 0.4f;
+        gl.button[gl.nbuttons].color[1] = 0.4f;
+        gl.button[gl.nbuttons].color[2] = 0.7f;
+        gl.button[gl.nbuttons].dcolor[0] = gl.button[gl.nbuttons].color[0] * 0.5f;
+        gl.button[gl.nbuttons].dcolor[1] = gl.button[gl.nbuttons].color[1] * 0.5f;
+        gl.button[gl.nbuttons].dcolor[2] = gl.button[gl.nbuttons].color[2] * 0.5f;
+        gl.button[gl.nbuttons].text_color = 0x00ffffff;
+        gl.nbuttons++;
+        gl.button[gl.nbuttons].r.width = 140;
+        gl.button[gl.nbuttons].r.height = 60;
+        gl.button[gl.nbuttons].r.left = 20;
+        gl.button[gl.nbuttons].r.bot = 160;
+        gl.button[gl.nbuttons].r.right =
+           gl.button[gl.nbuttons].r.left + gl.button[gl.nbuttons].r.width;
+        gl.button[gl.nbuttons].r.top = gl.button[gl.nbuttons].r.bot +
+           gl.button[gl.nbuttons].r.height;
+        gl.button[gl.nbuttons].r.centerx = (gl.button[gl.nbuttons].r.left +
+           gl.button[gl.nbuttons].r.right) / 2;
+        gl.button[gl.nbuttons].r.centery = (gl.button[gl.nbuttons].r.bot +
+           gl.button[gl.nbuttons].r.top) / 2;
+        strcpy(gl.button[gl.nbuttons].text, "Credits");
+        gl.button[gl.nbuttons].down = 0;
+        gl.button[gl.nbuttons].click = 0;
+        gl.button[gl.nbuttons].color[0] = 0.3f;
+        gl.button[gl.nbuttons].color[1] = 0.3f;
+        gl.button[gl.nbuttons].color[2] = 0.6f;
+        gl.button[gl.nbuttons].dcolor[0] = gl.button[gl.nbuttons].color[0] * 0.5f;
+        gl.button[gl.nbuttons].dcolor[1] = gl.button[gl.nbuttons].color[1] * 0.5f;
+        gl.button[gl.nbuttons].dcolor[2] = gl.button[gl.nbuttons].color[2] * 0.5f;
+        gl.button[gl.nbuttons].text_color = 0x00ffffff;
+        gl.nbuttons++;
+	
 
 }
 
@@ -793,6 +856,43 @@ void render(void)
 		glEnd();
 		glPopMatrix();
 	}
+	/////////////draw all buttons////////////////////////////////////////////////////
+	for (int i=0; i<gl.nbuttons; i++) {
+                if (gl.button[i].over) {
+                        int w=2;
+                        glColor3f(1.0f, 1.0f, 0.0f);
+                        //draw a highlight around button
+                        glLineWidth(3);
+                        glBegin(GL_LINE_LOOP);
+                                glVertex2i(gl.button[i].r.left-w,  gl.button[i].r.bot-w);
+                                glVertex2i(gl.button[i].r.left-w,  gl.button[i].r.top+w);
+                                glVertex2i(gl.button[i].r.right+w, gl.button[i].r.top+w);
+                                glVertex2i(gl.button[i].r.right+w, gl.button[i].r.bot-w);
+                                glVertex2i(gl.button[i].r.left-w,  gl.button[i].r.bot-w);
+                        glEnd();
+                        glLineWidth(1);
+                }
+                if (gl.button[i].down) {
+                        glColor3fv(gl.button[i].dcolor);
+                } else {
+                        glColor3fv(gl.button[i].color);
+                }
+                glBegin(GL_QUADS);
+                        glVertex2i(gl.button[i].r.left,  gl.button[i].r.bot);
+                        glVertex2i(gl.button[i].r.left,  gl.button[i].r.top);
+                        glVertex2i(gl.button[i].r.right, gl.button[i].r.top);
+                        glVertex2i(gl.button[i].r.right, gl.button[i].r.bot);
+                glEnd();
+                r.left = gl.button[i].r.centerx;
+                r.bot  = gl.button[i].r.centery-8;
+                r.center = 1;
+                if (gl.button[i].down) {
+                        ggprint16(&r, 0, gl.button[i].text_color, "Pressed!");
+                } else {
+                        ggprint16(&r, 0, gl.button[i].text_color, gl.button[i].text);
+                }
+        }
+	/////////////////////////////////////////////////////////////////////////////////	
 	//
 	//========================
 	//Render the tile system
