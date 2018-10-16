@@ -34,3 +34,15 @@ void show_justin_image (int x, int y, GLuint textid)
 
     glPopMatrix();
 }
+
+// Converts a pixel positon to a opengl mapping.
+float convert_pixel_position (float positon, float res)
+{
+    return (2 / res) * (positon) - 1;
+}
+
+// Converts a gl mapping to a pixel position.
+float convert_gl_postion (float positon, float res)
+{
+    return positon * res;
+}

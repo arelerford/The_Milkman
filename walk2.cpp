@@ -51,6 +51,11 @@ int checkKeys(XEvent *e);
 void init();
 void physics();
 void render();
+extern float convert_pixel_position (float, float);
+
+struct Coord {
+    float x, y;
+};
 
 //-----------------------------------------------------------------------------
 //Setup timers
@@ -76,19 +81,7 @@ public:
 	}
 } timers;
 //-----------------------------------------------------------------------------
-//buttons
-#define MAXBUTTONS 4
-typedef struct t_button{
-	Rect r;
-        char text[32];
-        int over;
-        int down;
-        int click;
-        float color[3];
-        float dcolor[3];
-        unsigned int text_color;
-} Button;
-	
+
 class Image;
 
 class Sprite {
@@ -116,8 +109,7 @@ public:
     GLuint catTexture;
     //GLuint  ;
     //GLuint  ;
-    Button button[MAXBUTTONS];
-    int nbuttons; 
+    
     bool displayCredits;
 	unsigned char keys[65536];
 	int xres, yres;
@@ -353,6 +345,39 @@ public:
 			unlink(ppmname);
 	}
 };
+
+class Player {
+    public:
+        float xpos, ypos;
+        float width, height;
+        Player(float _xpos, float _ypos, float _width, float _height) {
+            xpos = _xpos;
+            ypos = _ypos;
+            width = _width;
+            height = _height;
+        }
+
+        void move (float x, float y) {
+            xpos += x;
+            ypos += y;        
+        }
+
+        void render_player () {
+            glColor3f (0.0f, 1.0f, 0.0f);
+
+            glBegin(GL_QUADS);
+			    glTexCoord2f(0, 0); 
+                    glVertex2f(xpos, ypos);
+    			glTexCoord2f(0, 1); 
+                    glVertex2f(xpos, ypos + height);
+			    glTexCoord2f(1, 1); 
+                    glVertex2f(xpos + width, ypos + height);
+    			glTexCoord2f(1, 0); 
+                    glVertex2f(xpos + width, ypos);
+		    glEnd();
+        }
+} player (100, 100, 75, 100);
+
 Image img[5] = {
 "./images/walk.gif",
 "./images/exp.png",
@@ -511,56 +536,6 @@ void initOpengl(void)
 }
 
 void init() {
-	//initialize buttons...
-        gl.nbuttons=0;
-        //size and position
-        gl.button[gl.nbuttons].r.width = 140;
-        gl.button[gl.nbuttons].r.height = 60;
-        gl.button[gl.nbuttons].r.left = 20;
-        gl.button[gl.nbuttons].r.bot = 320;
-        gl.button[gl.nbuttons].r.right =
-           gl.button[gl.nbuttons].r.left + gl.button[gl.nbuttons].r.width;
-        gl.button[gl.nbuttons].r.top =
-           gl.button[gl.nbuttons].r.bot + gl.button[gl.nbuttons].r.height;
-        gl.button[gl.nbuttons].r.centerx =
-           (gl.button[gl.nbuttons].r.left + gl.button[gl.nbuttons].r.right) / 2;
-        gl.button[gl.nbuttons].r.centery =
-           (gl.button[gl.nbuttons].r.bot + gl.button[gl.nbuttons].r.top) / 2;
-        strcpy(gl.button[gl.nbuttons].text, "Start");
-        gl.button[gl.nbuttons].down = 0;
-        gl.button[gl.nbuttons].click = 0;
-        gl.button[gl.nbuttons].color[0] = 0.4f;
-        gl.button[gl.nbuttons].color[1] = 0.4f;
-        gl.button[gl.nbuttons].color[2] = 0.7f;
-        gl.button[gl.nbuttons].dcolor[0] = gl.button[gl.nbuttons].color[0] * 0.5f;
-        gl.button[gl.nbuttons].dcolor[1] = gl.button[gl.nbuttons].color[1] * 0.5f;
-        gl.button[gl.nbuttons].dcolor[2] = gl.button[gl.nbuttons].color[2] * 0.5f;
-        gl.button[gl.nbuttons].text_color = 0x00ffffff;
-        gl.nbuttons++;
-        gl.button[gl.nbuttons].r.width = 140;
-        gl.button[gl.nbuttons].r.height = 60;
-        gl.button[gl.nbuttons].r.left = 20;
-        gl.button[gl.nbuttons].r.bot = 160;
-        gl.button[gl.nbuttons].r.right =
-           gl.button[gl.nbuttons].r.left + gl.button[gl.nbuttons].r.width;
-        gl.button[gl.nbuttons].r.top = gl.button[gl.nbuttons].r.bot +
-           gl.button[gl.nbuttons].r.height;
-        gl.button[gl.nbuttons].r.centerx = (gl.button[gl.nbuttons].r.left +
-           gl.button[gl.nbuttons].r.right) / 2;
-        gl.button[gl.nbuttons].r.centery = (gl.button[gl.nbuttons].r.bot +
-           gl.button[gl.nbuttons].r.top) / 2;
-        strcpy(gl.button[gl.nbuttons].text, "Credits");
-        gl.button[gl.nbuttons].down = 0;
-        gl.button[gl.nbuttons].click = 0;
-        gl.button[gl.nbuttons].color[0] = 0.3f;
-        gl.button[gl.nbuttons].color[1] = 0.3f;
-        gl.button[gl.nbuttons].color[2] = 0.6f;
-        gl.button[gl.nbuttons].dcolor[0] = gl.button[gl.nbuttons].color[0] * 0.5f;
-        gl.button[gl.nbuttons].dcolor[1] = gl.button[gl.nbuttons].color[1] * 0.5f;
-        gl.button[gl.nbuttons].dcolor[2] = gl.button[gl.nbuttons].color[2] * 0.5f;
-        gl.button[gl.nbuttons].text_color = 0x00ffffff;
-        gl.nbuttons++;
-	
 
 }
 
@@ -725,6 +700,7 @@ void physics(void)
 	if (gl.walk || gl.keys[XK_Right] || gl.keys[XK_Left]) {
 		//man is walking...
 		//when time is up, advance the frame.
+        player.move (0.5f, 0.0f);
 		timers.recordTime(&timers.timeCurrent);
 		double timeSpan = timers.timeDiff(&timers.walkTime, &timers.timeCurrent);
 		if (timeSpan > gl.delay) {
@@ -856,43 +832,6 @@ void render(void)
 		glEnd();
 		glPopMatrix();
 	}
-	/////////////draw all buttons////////////////////////////////////////////////////
-	for (int i=0; i<gl.nbuttons; i++) {
-                if (gl.button[i].over) {
-                        int w=2;
-                        glColor3f(1.0f, 1.0f, 0.0f);
-                        //draw a highlight around button
-                        glLineWidth(3);
-                        glBegin(GL_LINE_LOOP);
-                                glVertex2i(gl.button[i].r.left-w,  gl.button[i].r.bot-w);
-                                glVertex2i(gl.button[i].r.left-w,  gl.button[i].r.top+w);
-                                glVertex2i(gl.button[i].r.right+w, gl.button[i].r.top+w);
-                                glVertex2i(gl.button[i].r.right+w, gl.button[i].r.bot-w);
-                                glVertex2i(gl.button[i].r.left-w,  gl.button[i].r.bot-w);
-                        glEnd();
-                        glLineWidth(1);
-                }
-                if (gl.button[i].down) {
-                        glColor3fv(gl.button[i].dcolor);
-                } else {
-                        glColor3fv(gl.button[i].color);
-                }
-                glBegin(GL_QUADS);
-                        glVertex2i(gl.button[i].r.left,  gl.button[i].r.bot);
-                        glVertex2i(gl.button[i].r.left,  gl.button[i].r.top);
-                        glVertex2i(gl.button[i].r.right, gl.button[i].r.top);
-                        glVertex2i(gl.button[i].r.right, gl.button[i].r.bot);
-                glEnd();
-                r.left = gl.button[i].r.centerx;
-                r.bot  = gl.button[i].r.centery-8;
-                r.center = 1;
-                if (gl.button[i].down) {
-                        ggprint16(&r, 0, gl.button[i].text_color, "Pressed!");
-                } else {
-                        ggprint16(&r, 0, gl.button[i].text_color, gl.button[i].text);
-                }
-        }
-	/////////////////////////////////////////////////////////////////////////////////	
 	//
 	//========================
 	//Render the tile system
@@ -1066,6 +1005,8 @@ void render(void)
 	ggprint8b(&r, 16, c, "right arrow -> walk right");
 	ggprint8b(&r, 16, c, "left arrow  <- walk left");
 	ggprint8b(&r, 16, c, "frame: %i", gl.walkFrame);
+
+    player.render_player();
     
 	if (gl.displayCredits) {
 		// External Files
@@ -1078,6 +1019,8 @@ void render(void)
 		extern void show_justin_image(int, int, GLuint);
 		extern void show_AlexPicture(int, int, GLuint);
 		extern void show_austin_pic(int, int, GLuint);
+
+        extern float convert_pixel_positon (float, float);
 
 		glColor3f(255, 255, 255);
 
