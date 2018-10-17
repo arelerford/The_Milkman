@@ -51,11 +51,19 @@ int checkKeys(XEvent *e);
 void init();
 void physics();
 void render();
+class Image;
+unsigned char * buildAlphaData(Image*);
+
 extern float convert_pixel_position (float, float);
 
+//
 struct Coord {
     float x, y;
 };
+
+//start menu prototypes 
+void startMenu();
+void creditScreen();
 
 //-----------------------------------------------------------------------------
 //Setup timers
@@ -81,8 +89,6 @@ public:
 	}
 } timers;
 //-----------------------------------------------------------------------------
-
-class Image;
 
 class Sprite {
 public:
@@ -387,6 +393,65 @@ Image img[5] = {
 /* Alex Image
    Austin Image */};
 
+///////////////////////////////////////////////////////////////////////////////
+class Start {
+public:
+	// Images
+	Image cloud_img[8] = {
+	"./images/startmenu/cloud1.jpg",
+	"./images/startmenu/cloud2.jpg",
+	"./images/startmenu/cloud3.jpg",
+	"./images/startmenu/cloud4.jpg",
+	"./images/startmenu/cloud5.jpg",
+	"./images/startmenu/cloud6.jpg",
+	"./images/startmenu/cloud7.jpg",
+	"./images/startmenu/cloud8.jpg"
+	};
+	int num_cloud = sizeof cloud_img / sizeof *cloud_img;
+
+	Image text_img[2] = {
+	"./images/startmenu/title.gif",
+	"./images/startmenu/start.gif"
+	};
+	int num_text = sizeof text_img / sizeof *text_img;
+
+	//Textures
+	GLuint* cloud_tex;
+	GLuint* text_tex;
+
+	//Variables
+	bool menu = false;
+
+	Start() {
+
+		cloud_tex = new GLuint[num_cloud];
+		 text_tex = new GLuint[num_text];
+		
+		// Generate textures and bind images for clouds
+		for (int i = 0; i < num_cloud; i++) {
+			glGenTextures(1, &cloud_tex[i]);
+			glBindTexture(GL_TEXTURE_2D, cloud_tex[i]);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			unsigned char *new_img = buildAlphaData(&cloud_img[i]);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, cloud_img[i].width, cloud_img[i].height, 0,
+				GL_RGBA, GL_UNSIGNED_BYTE, new_img);
+			free(new_img);
+		}
+
+		// Generate textures and bind images for text
+		for (int i = 0; i < num_text; i++) {
+			glGenTextures(1, &text_tex[i]);
+			glBindTexture(GL_TEXTURE_2D, text_tex[i]);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			unsigned char *new_img = buildAlphaData(&text_img[i]);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, text_img[i].width, text_img[i].height, 0,
+				GL_RGBA, GL_UNSIGNED_BYTE, new_img);
+			free(new_img);
+		}
+	}
+} start;
 
 int main(void)
 {
@@ -460,8 +525,7 @@ void initOpengl(void)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexImage2D(GL_TEXTURE_2D, 0, 3, wCat, hCat, 0,
-		GL_RGB, GL_UNSIGNED_BYTE, img[4].data);
-	
+		GL_RGB, GL_UNSIGNED_BYTE, img[4].data);	
 	
 	////////////////////////////////////////////////////////////////////////////
 	//Initialize matrices
@@ -585,7 +649,7 @@ int checkMouse(XEvent *e)
                                         switch (i) {
                                               /* case 0: 
            						gl.displayCredits = !gl.displayCredits;
-                                                        break; */
+                                                        break; 
                                                 case 1:
 						    	printf("Credits was clicked!\n"); //to tell if it's working
            						gl.displayCredits = !gl.displayCredits;
@@ -658,13 +722,12 @@ int checkKeys(XEvent *e)
 		case XK_s:
 			screenCapture();
 			break;
-		case XK_m:
-			gl.movie ^= 1;
-			break;
+
 		case XK_w:
 			timers.recordTime(&timers.walkTime);
 			gl.walk ^= 1;
 			break;
+
 		case XK_e:
 			gl.exp.pos[0] = 200.0;
 			gl.exp.pos[1] = -60.0;
@@ -672,6 +735,7 @@ int checkKeys(XEvent *e)
 			timers.recordTime(&gl.exp.time);
 			gl.exp.onoff ^= 1;
 			break;
+
 		case XK_f:
 			gl.exp44.pos[0] = 200.0;
 			gl.exp44.pos[1] = -60.0;
@@ -679,27 +743,40 @@ int checkKeys(XEvent *e)
 			timers.recordTime(&gl.exp44.time);
 			gl.exp44.onoff ^= 1;
 			break;
+
 		case XK_Left:
 			break;
+
 		case XK_Right:
 			break;
+
 		case XK_Up:
 			break;
+
 		case XK_Down:
 			break;
+
 		case XK_equal:
 			gl.delay -= 0.005;
 			if (gl.delay < 0.005)
 				gl.delay = 0.005;
 			break;
+
 		case XK_minus:
 			gl.delay += 0.005;
 			break;
+
 		case XK_Escape:
 			return 1;
 			break;
-         case XK_c:
+
+		case XK_c:
            gl.displayCredits = !gl.displayCredits;
+           break;
+
+		case XK_m:
+			start.menu = !start.menu;
+			break;
 	}
 	return 0;
 }
@@ -1037,45 +1114,9 @@ void render(void)
     player.render_player();
     
 	if (gl.displayCredits) {
-		// External Files
-		extern void show_credits_justin (Rect*);
-		extern void show_austin(Rect*);
-		extern void show_isaac_name(Rect*);
-		extern void show_AlexCredits (Rect*);
-
-		extern void show_isaac_pic(int, int, GLuint);        
-		extern void show_justin_image(int, int, GLuint);
-		extern void show_AlexPicture(int, int, GLuint);
-		extern void show_austin_pic(int, int, GLuint);
-
-        extern float convert_pixel_positon (float, float);
-
-		glColor3f(255, 255, 255);
-
-		glBegin(GL_QUADS);
-			glTexCoord2f(0, 0); glVertex2f(0, 0);
-			glTexCoord2f(0, 1); glVertex2f(0, gl.yres);
-			glTexCoord2f(1, 1); glVertex2f(gl.xres, gl.yres);
-			glTexCoord2f(1, 0); glVertex2f(gl.xres, 0);
-		glEnd();
-
-		glColor3f(0, 0, 0);
-
-		r.bot = gl.yres - 80;
-		r.left = gl.xres / 3;
-		int pic_column = 2 * r.left;
-
-		show_AlexPicture(pic_column, r.bot + 10, gl.dogTexture);
-		show_AlexCredits(&r);
-
-		show_isaac_pic(pic_column, r.bot + 10, gl.dogTexture);    
-		show_isaac_name(&r);
-
-		show_austin_pic(pic_column, r.bot + 10, gl.dogTexture);
-		show_austin(&r);
-
-		show_justin_image(pic_column, r.bot + 10, gl.catTexture);
-		show_credits_justin(&r);
+		creditScreen();
+    } else if (start.menu) {
+    	startMenu();
     }
 
 	if (gl.movie) {
@@ -1083,9 +1124,57 @@ void render(void)
 	}
 }
 
+void creditScreen()
+{
+	glClearColor(1, 1, 1, 1);
+	glClear(GL_COLOR_BUFFER_BIT);
 
+	// External Files
+	extern void show_credits_justin (Rect*);
+	extern void show_austin(Rect*);
+	extern void show_isaac_name(Rect*);
+	extern void show_AlexCredits (Rect*);
 
+	extern void show_isaac_pic(int, int, GLuint);        
+	extern void show_justin_image(int, int, GLuint);
+	extern void show_AlexPicture(int, int, GLuint);
+	extern void show_austin_pic(int, int, GLuint);
 
+    extern float convert_pixel_positon (float, float);
 
+    Rect r;
 
+	r.bot = gl.yres - 80;
+	r.left = gl.xres / 3;
+	int pic_column = 2 * r.left;
 
+	show_AlexPicture(pic_column, r.bot + 10, gl.dogTexture);
+	show_AlexCredits(&r);
+
+	show_isaac_pic(pic_column, r.bot + 10, gl.dogTexture);    
+	show_isaac_name(&r);
+
+	show_austin_pic(pic_column, r.bot + 10, gl.dogTexture);
+	show_austin(&r);
+
+	show_justin_image(pic_column, r.bot + 10, gl.catTexture);
+	show_credits_justin(&r);
+}
+
+void startMenu() 
+{
+	// Clear the screen to specific color
+	float   red =  78.0 / 255;
+	float green = 173.0 / 255;
+	float  blue = 245.0 / 255;
+
+	glClearColor(red, green, blue, 1);
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	//External Files
+	extern void showClouds(int, GLuint[], int, int);
+	extern void showText(GLuint[], int, int);
+	
+	showClouds(start.num_cloud, start.cloud_tex, gl.xres, gl.yres);
+	showText(start.text_tex, gl.xres, gl.yres);
+}
