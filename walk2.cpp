@@ -647,7 +647,7 @@ int checkMouse(XEvent *e)
                         if (gl.button[i].over) {
                                 if (lbutton) {
                                         switch (i) {
-                                              /* case 0: 
+                                            case 0: 
            						gl.displayCredits = !gl.displayCredits;
                                                         break; 
                                                 case 1:
@@ -899,17 +899,8 @@ void render(void)
 	Rect r;
 	//Clear the screen
 	glClearColor(0.1, 0.1, 0.1, 1.0);
-	glClear(GL_COLOR_BUFFER_BIT);
-	
+	glClear(GL_COLOR_BUFFER_BIT);	
 	unsigned int c = 0x00ffff44;
-	/*if (gl.displayCredits) {
-            
-        	show_credits(r,200,c);
-        	show_credits_justin(r, 16, c);
-        	show_isaac(r, 16, c);
-        	show_austin(r,16,c);
-    		return;
-	}*/
 	
 	float cx = gl.xres/2.0;
 	float cy = gl.yres/2.0;
