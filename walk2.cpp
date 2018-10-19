@@ -110,13 +110,6 @@ public:
 
 class Global {
 public:
-	// Credit Picute Texture Variables
-	GLuint dogTexture;
-    GLuint catTexture;
-    //GLuint  ;
-    //GLuint  ;
-    
-    bool displayCredits;
 	unsigned char keys[65536];
 	int xres, yres;
 	int movie, movieStep;
@@ -136,7 +129,6 @@ public:
 		logClose();
 	}
 	Global() {
-        displayCredits = false;
 		logOpen();
 		camera[0] = camera[1] = 0.0;
 		movie=0;
@@ -200,9 +192,9 @@ public:
 		}
 		for (int i=0; i<nrows; i++) {
 			for (int j=0; j<ncols; j++) {
-				printf("%c", arr[i][j]);
+				// printf("%c", arr[i][j]);
 			}
-			printf("\n");
+			// printf("\n");
 		}
 	}
 	void removeCrLf(char *str) {
@@ -384,14 +376,11 @@ class Player {
         }
 } player (100, 100, 75, 100);
 
-Image img[5] = {
+Image img[3] = {
 "./images/walk.gif",
 "./images/exp.png",
-"./images/exp44.png",
-"./images/dog.jpg",
-"./images/justinS.jpg"
-/* Alex Image
-   Austin Image */};
+"./images/exp44.png"
+};
 
 ///////////////////////////////////////////////////////////////////////////////
 class Start {
@@ -420,7 +409,7 @@ public:
 	GLuint* text_tex;
 
 	//Variables
-	bool menu = false;
+	bool display = false;
 
 	Start() {
 
@@ -452,6 +441,40 @@ public:
 		}
 	}
 } start;
+
+class Credits {
+public:
+	// Images
+	Image team_img[2] = {
+	"./images/credits/isaacL.jpg",
+	"./images/credits/justinS.jpg"
+	//Alex img
+	//Austin img
+	};
+	int num_team = sizeof team_img / sizeof *team_img;
+
+	//Textures
+	GLuint* team_tex;
+
+	//Variables
+	bool display = false;
+
+	Credits() {
+
+		team_tex = new GLuint[num_team];
+
+		//Generate textures and bind images for team photos
+		for (int i = 0; i < num_team; i++) {
+			glGenTextures(1, &team_tex[i]);
+			glBindTexture(GL_TEXTURE_2D, team_tex[i]);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			glTexImage2D(GL_TEXTURE_2D, 0, 3, team_img[i].width, team_img[i].height, 0,
+			GL_RGB, GL_UNSIGNED_BYTE, team_img[i].data);
+		}
+	}
+} credits;
+///////////////////////////////////////////////////////////////////////////////
 
 int main(void)
 {
@@ -506,28 +529,8 @@ unsigned char *buildAlphaData(Image *img)
 void initOpengl(void)
 {
 	//OpenGL initialization
-	glGenTextures(1, &gl.dogTexture);
-    glGenTextures(1, &gl.catTexture);
 	glViewport(0, 0, gl.xres, gl.yres);
 	///////////////////////////////////////////////////////////////////////////////////////////////////
-	// Credit Picture Texture Initialization
-	int wDog = img[3].width;
-	int hDog = img[3].height;
-	glBindTexture(GL_TEXTURE_2D, gl.dogTexture);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexImage2D(GL_TEXTURE_2D, 0, 3, wDog, hDog, 0,
-		GL_RGB, GL_UNSIGNED_BYTE, img[3].data);
-
-    int wCat = img[4].width;
-    int hCat = img[4].height;
-    glBindTexture(GL_TEXTURE_2D, gl.catTexture);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexImage2D(GL_TEXTURE_2D, 0, 3, wCat, hCat, 0,
-		GL_RGB, GL_UNSIGNED_BYTE, img[4].data);	
-	
-	////////////////////////////////////////////////////////////////////////////
 	//Initialize matrices
 	glMatrixMode(GL_PROJECTION); glLoadIdentity();
 	glMatrixMode(GL_MODELVIEW); glLoadIdentity();
@@ -637,7 +640,8 @@ int checkMouse(XEvent *e)
 			savey = e->xbutton.y;
 		}
 	}
-	for (i=0; i<gl.nbuttons; i++) {
+	/*
+		for (i=0; i<gl.nbuttons; i++) {
                 gl.button[i].over=0;
                 if (x >= gl.button[i].r.left &&
                         x <= gl.button[i].r.right &&
@@ -659,6 +663,7 @@ int checkMouse(XEvent *e)
                         }
                 }
         }
+        */
 		return 0;
 }
 
@@ -771,11 +776,11 @@ int checkKeys(XEvent *e)
 			break;
 
 		case XK_c:
-           gl.displayCredits = !gl.displayCredits;
-           break;
+			credits.display = !credits.display;
+			break;
 
 		case XK_m:
-			start.menu = !start.menu;
+			start.display = !start.display;
 			break;
 	}
 	return 0;
@@ -1102,13 +1107,13 @@ void render(void)
 	ggprint8b(&r, 16, c, "left arrow  <- walk left");
 	ggprint8b(&r, 16, c, "frame: %i", gl.walkFrame);
 
-    player.render_player();
-    
-	if (gl.displayCredits) {
+	player.render_player();
+
+	if (start.display) {
+		startMenu();
+	} else if (credits.display) {
 		creditScreen();
-    } else if (start.menu) {
-    	startMenu();
-    }
+	}
 
 	if (gl.movie) {
 		screenCapture();
@@ -1131,24 +1136,24 @@ void creditScreen()
 	extern void show_AlexPicture(int, int, GLuint);
 	extern void show_austin_pic(int, int, GLuint);
 
-    extern float convert_pixel_positon (float, float);
+	extern float convert_pixel_positon (float, float);
 
-    Rect r;
+	Rect r;
 
 	r.bot = gl.yres - 80;
 	r.left = gl.xres / 3;
 	int pic_column = 2 * r.left;
 
-	show_AlexPicture(pic_column, r.bot + 10, gl.dogTexture);
+	show_AlexPicture(pic_column, r.bot + 10, credits.team_tex[0]);
 	show_AlexCredits(&r);
 
-	show_isaac_pic(pic_column, r.bot + 10, gl.dogTexture);    
+	show_isaac_pic(pic_column, r.bot + 10, credits.team_tex[0]);    
 	show_isaac_name(&r);
 
-	show_austin_pic(pic_column, r.bot + 10, gl.dogTexture);
+	show_austin_pic(pic_column, r.bot + 10, credits.team_tex[0]);
 	show_austin(&r);
 
-	show_justin_image(pic_column, r.bot + 10, gl.catTexture);
+	show_justin_image(pic_column, r.bot + 10, credits.team_tex[1]);
 	show_credits_justin(&r);
 }
 
