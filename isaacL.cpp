@@ -41,9 +41,9 @@ class Cloud {
         // xpos and ypos refers to bottom left corner of image
         int xpos;
         int ypos;
-        int dx;         // Horizontal Speed
-        int dy;         // Vertical Speed
-        int size;       // size should not exceed 100
+        int dx = rand() % 2 + 3;    // Horizontal Speed
+        int dy = 2;                 // Vertical Speed
+        int size = SIZE_CLOUDS;
         bool init;
         GLuint texid;
 
@@ -51,9 +51,6 @@ class Cloud {
 
         Cloud() {
             init = true;
-            size = SIZE_CLOUDS;
-              dx = 5;
-              dy = 2;
         }
 
         void draw() {
@@ -76,7 +73,6 @@ class Cloud {
         }
         
         void setAttr(GLuint id, int x, int y) {
-
             texid = id;
             xpos = x * size;
             ypos = y * size;
@@ -91,8 +87,8 @@ class Cloud {
 
         void refreshY(GLuint randTex, int xres) {
             texid = randTex;
-            ypos = -size;
             xpos = size * (rand() % (xres/size) );
+            ypos = -size;
         }
 
         void move() {
@@ -104,25 +100,22 @@ class Cloud {
 
         int getY() {return ypos;}
 
-        int getSize() {return size;}
-
         bool needInit() {return init;}
 };
 
 Cloud cloud[NUM_CLOUDS];
 void showClouds(int size, GLuint texid[], int xres, int yres)
 {   
-    int  num_cloud = sizeof cloud / sizeof *cloud;
     int    num_tex = size;
-    int size_cloud = cloud[0].getSize();
 
-    for (int i = 0; i < num_cloud; i++) {
+    for (int i = 0; i < NUM_CLOUDS; i++) {
         if (cloud[i].needInit() ) {
             GLuint randTex = texid[rand() % num_tex];
-            GLuint randX = rand() % (xres/size_cloud);
-            GLuint randY = i % (xres/size_cloud);
+            GLuint randX = rand() % (xres / SIZE_CLOUDS);
+            GLuint randY = i % (xres / SIZE_CLOUDS);
             cloud[i].setAttr(randTex,randX, randY);
         }
+
         int cloudX = cloud[i].getX();
         int cloudY = cloud[i].getY();
 
@@ -145,13 +138,13 @@ void showText(GLuint text_tex[], int xres, int yres) {
     
     static float width = 14;
     static float height = 2;
-    GLuint name = text_tex[0];
+    GLuint title = text_tex[0];
     int max_width = 700;
 
     glColor3f (1.0f, 1.0f, 1.0f);
     glPushMatrix();
-    glTranslatef(xres/2, yres*(5.0/6), 0);    
-    glBindTexture(GL_TEXTURE_2D, name);
+    glTranslatef(xres/2, yres*(5.0 / 6.0), 0);    
+    glBindTexture(GL_TEXTURE_2D, title);
     glEnable(GL_ALPHA_TEST);
     glAlphaFunc(GL_GREATER, 0.0f);
 
@@ -166,9 +159,12 @@ void showText(GLuint text_tex[], int xres, int yres) {
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_ALPHA_TEST);
 
-    float rate = 1.1;
+    float rate = 1.4;
     if (width < max_width) {
          width *= rate;
         height *= rate;
+    } else {
+         width = max_width;
+        height = width / 7;
     }
 }
