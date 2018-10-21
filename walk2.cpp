@@ -386,6 +386,8 @@ Image img[3] = {
 class Start {
 public:
 	// Images
+	Image title_img = {"./images/startmenu/title.png"};
+
 	Image cloud_img[8] = {
 	"./images/startmenu/cloud1.jpg",
 	"./images/startmenu/cloud2.jpg",
@@ -398,18 +400,22 @@ public:
 	};
 	int num_cloud = sizeof cloud_img / sizeof *cloud_img;
 
-	Image text_img[2] = {
-	"./images/startmenu/title.gif",
-	"./images/startmenu/start.gif"
+	Image text_img[4] = {
+		"./images/startmenu/start.png",
+		"./images/startmenu/levels.png",
+		"./images/startmenu/options.png",
+		"./images/startmenu/credits.png"
 	};
 	int num_text = sizeof text_img / sizeof *text_img;
 
 	//Textures
 	GLuint* cloud_tex;
 	GLuint* text_tex;
+	GLuint title_tex;
 
 	//Variables
 	bool display = false;
+	int opt[4] = {1, 0, 0, 0};
 
 	Start() {
 
@@ -428,7 +434,7 @@ public:
 			free(new_img);
 		}
 
-		// Generate textures and bind images for text
+		// Generate textures and bind imaes for text
 		for (int i = 0; i < num_text; i++) {
 			glGenTextures(1, &text_tex[i]);
 			glBindTexture(GL_TEXTURE_2D, text_tex[i]);
@@ -439,7 +445,86 @@ public:
 				GL_RGBA, GL_UNSIGNED_BYTE, new_img);
 			free(new_img);
 		}
+
+		// Generate textures and bind images for title
+		glGenTextures(1, &title_tex);
+		glBindTexture(GL_TEXTURE_2D, title_tex);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		unsigned char *new_img = buildAlphaData(&title_img);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, title_img.width, title_img.height, 0,
+			GL_RGBA, GL_UNSIGNED_BYTE, new_img);
+		free(new_img);
+	};
+
+	void Display() {
+		if (display) {
+			//External Files
+			extern void showClouds(GLuint cloud_textures[], int cloud_texture_size, int xres, int yres);
+			extern void showTitle(GLuint title_texture, int xres, int yres);
+			extern void showText(GLuint text_textures[], int opt[], int xres, int yres);
+
+			// Clear the screen to specific color
+			float   red =  78.0 / 255;
+			float green = 173.0 / 255;
+			float  blue = 245.0 / 255;
+
+			glClearColor(red, green, blue, 1);
+			glClear(GL_COLOR_BUFFER_BIT);
+			
+			showClouds(cloud_tex, num_cloud, gl.xres, gl.yres);
+			showTitle(title_tex, gl.xres, gl.yres);
+			showText(text_tex, opt, gl.xres, gl.yres);
+		}
 	}
+
+	int checkKeys(XEvent *e) {
+		//keyboard input?
+		static int shift = 0;
+
+		if (e->type != KeyPress && e->type != KeyRelease) {
+			return 0;
+		}
+
+		int key = XLookupKeysym(&e->xkey, 0);
+		gl.keys[key] = 1;
+		if (e->type == KeyRelease) {
+			gl.keys[key] = 0;
+			if (key == XK_Shift_L || key == XK_Shift_R){
+				shift = 0;
+			}
+			return 0;
+		}
+		gl.keys[key] = 1;
+		if (key == XK_Shift_L || key == XK_Shift_R) {
+			shift = 1;
+			return 0;
+		}
+		(void)shift;
+		switch (key) {
+			case XK_Escape:
+				return 1;
+				break;
+
+			case XK_Up:
+				if (opt[0]) break;
+				for (int i = 0; i < 3; i++) {
+					opt[i] = opt[i+1];
+				}
+				opt[3] = 0;
+				break;
+
+			case XK_Down:
+				if (opt[3]) break;
+				for (int i = 3; i > 0; i--) {
+					opt[i] = opt[i-1];
+				}
+				opt[0] = 0;
+			break;
+		}
+		return 0;
+	}
+
 } start;
 
 class Credits {
@@ -473,6 +558,48 @@ public:
 			GL_RGB, GL_UNSIGNED_BYTE, team_img[i].data);
 		}
 	}
+
+	void Display() {
+		if (display) {
+			//Clear the screen
+			glClearColor(1, 1, 1, 1);
+			glClear(GL_COLOR_BUFFER_BIT);
+
+			// External Files
+			extern void show_credits_justin (Rect*);
+			extern void show_austin(Rect*);
+			extern void show_isaac_name(Rect*);
+			extern void show_AlexCredits (Rect*);
+
+			extern void show_isaac_pic(int, int, GLuint);        
+			extern void show_justin_image(int, int, GLuint);
+			extern void show_AlexPicture(int, int, GLuint);
+			extern void show_austin_pic(int, int, GLuint);
+
+			Rect r;
+
+			r.bot = gl.yres - 80;
+			r.left = gl.xres / 3;
+			int pic_column = 2 * r.left;
+
+			show_AlexPicture(pic_column, r.bot + 10, team_tex[0]);
+			show_AlexCredits(&r);
+
+			show_isaac_pic(pic_column, r.bot + 10, team_tex[0]);    
+			show_isaac_name(&r);
+
+			show_austin_pic(pic_column, r.bot + 10, team_tex[0]);
+			show_austin(&r);
+
+			show_justin_image(pic_column, r.bot + 10, team_tex[1]);
+			show_credits_justin(&r);
+		}
+	}
+
+	int checkKeys(XEvent *e) {
+		return 0;
+	}
+
 } credits;
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -783,6 +910,7 @@ int checkKeys(XEvent *e)
 			start.display = !start.display;
 			break;
 	}
+	if (start.display) return start.checkKeys(e);
 	return 0;
 }
 
@@ -1109,68 +1237,6 @@ void render(void)
 
 	player.render_player();
 
-	if (start.display) {
-		startMenu();
-	} else if (credits.display) {
-		creditScreen();
-	}
-
-	if (gl.movie) {
-		screenCapture();
-	}
-}
-
-void creditScreen()
-{
-	glClearColor(1, 1, 1, 1);
-	glClear(GL_COLOR_BUFFER_BIT);
-
-	// External Files
-	extern void show_credits_justin (Rect*);
-	extern void show_austin(Rect*);
-	extern void show_isaac_name(Rect*);
-	extern void show_AlexCredits (Rect*);
-
-	extern void show_isaac_pic(int, int, GLuint);        
-	extern void show_justin_image(int, int, GLuint);
-	extern void show_AlexPicture(int, int, GLuint);
-	extern void show_austin_pic(int, int, GLuint);
-
-	extern float convert_pixel_positon (float, float);
-
-	Rect r;
-
-	r.bot = gl.yres - 80;
-	r.left = gl.xres / 3;
-	int pic_column = 2 * r.left;
-
-	show_AlexPicture(pic_column, r.bot + 10, credits.team_tex[0]);
-	show_AlexCredits(&r);
-
-	show_isaac_pic(pic_column, r.bot + 10, credits.team_tex[0]);    
-	show_isaac_name(&r);
-
-	show_austin_pic(pic_column, r.bot + 10, credits.team_tex[0]);
-	show_austin(&r);
-
-	show_justin_image(pic_column, r.bot + 10, credits.team_tex[1]);
-	show_credits_justin(&r);
-}
-
-void startMenu() 
-{
-	// Clear the screen to specific color
-	float   red =  78.0 / 255;
-	float green = 173.0 / 255;
-	float  blue = 245.0 / 255;
-
-	glClearColor(red, green, blue, 1);
-	glClear(GL_COLOR_BUFFER_BIT);
-
-	//External Files
-	extern void showClouds(int, GLuint[], int, int);
-	extern void showText(GLuint[], int, int);
-	
-	showClouds(start.num_cloud, start.cloud_tex, gl.xres, gl.yres);
-	showText(start.text_tex, gl.xres, gl.yres);
+	start.Display();
+	credits.Display();
 }
