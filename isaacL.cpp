@@ -6,7 +6,7 @@
 #include "fonts.h"
 #include <GL/glx.h>
 #include <stdio.h>      //For debugging w/ printf()
-#include <stdlib.h>     //For rand() and seed()
+#include <stdlib.h>     //For rand()
 #include <cassert>
 
 #define NUM_CLOUDS 20
@@ -41,17 +41,14 @@ class Cloud {
         // xpos and ypos refers to bottom left corner of image
         int xpos;
         int ypos;
-        int dx = rand() % 2 + 3;    // Horizontal Speed
+        int dx = rand() % 3 + 3;    // Horizontal Speed
         int dy = 2;                 // Vertical Speed
         int size = SIZE_CLOUDS;
-        bool init;
+        bool init = true;;
         GLuint texid;
 
     public:
-
-        Cloud() {
-            init = true;
-        }
+        Cloud() {}
 
         void draw() {
             glColor3f(1.0f, 1.0f, 1.0f);
@@ -69,7 +66,6 @@ class Cloud {
             glPopMatrix();
             glBindTexture(GL_TEXTURE_2D, 0);
             glDisable(GL_ALPHA_TEST);
-
         }
         
         void setAttr(GLuint id, int x, int y) {
@@ -92,8 +88,8 @@ class Cloud {
         }
 
         void move() {
-            ypos += dy;
             xpos += dx;
+            ypos += dy;
         }
 
         int getX() {return xpos;}
@@ -104,9 +100,10 @@ class Cloud {
 };
 
 Cloud cloud[NUM_CLOUDS];
-void showClouds(int size, GLuint texid[], int xres, int yres)
+
+void showClouds(GLuint texid[], int size, int xres, int yres)
 {   
-    int    num_tex = size;
+    int num_tex = size;
 
     for (int i = 0; i < NUM_CLOUDS; i++) {
         if (cloud[i].needInit() ) {
@@ -134,11 +131,11 @@ void showClouds(int size, GLuint texid[], int xres, int yres)
     }  
 }
 
-void showText(GLuint text_tex[], int xres, int yres) {
+void showTitle(GLuint text_tex, int xres, int yres) {
     
     static float width = 14;
     static float height = 2;
-    GLuint title = text_tex[0];
+    GLuint title = text_tex;
     int max_width = 700;
 
     glColor3f (1.0f, 1.0f, 1.0f);
@@ -160,6 +157,7 @@ void showText(GLuint text_tex[], int xres, int yres) {
     glDisable(GL_ALPHA_TEST);
 
     float rate = 1.4;
+
     if (width < max_width) {
          width *= rate;
         height *= rate;
@@ -168,3 +166,72 @@ void showText(GLuint text_tex[], int xres, int yres) {
         height = width / 7;
     }
 }
+
+class Text {
+private:
+    int xpos, ypos;           //Refers to dead center of text
+    int    width, height;
+    GLuint texid;
+    bool display = false;
+    bool    init = true;
+    bool  active = false;
+
+public:
+    Text() {
+         width = 112;
+        height = width/7;
+    }
+
+    void setAttr(GLuint id, int x, int y) {
+        texid = id;
+         xpos = x;
+         ypos = y;
+         init = false;
+    }
+
+    void draw() {
+        glColor3f(1.0f, 1.0f, 1.0f);
+        glPushMatrix();
+        glTranslatef(xpos, ypos, 0);
+        glBindTexture(GL_TEXTURE_2D, texid);
+        glEnable(GL_ALPHA_TEST);
+        glAlphaFunc(GL_GREATER, 0.0f);
+        glBegin(GL_QUADS);
+            glTexCoord2f(0.0f, 1.0f); glVertex2i (-width/2,-height/2);
+            glTexCoord2f(1.0f, 1.0f); glVertex2i ( width/2,-height/2);
+            glTexCoord2f(1.0f, 0.0f); glVertex2i ( width/2, height/2);
+            glTexCoord2f(0.0f, 0.0f); glVertex2i (-width/2, height/2);
+        glEnd();
+        glPopMatrix();
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glDisable(GL_ALPHA_TEST);
+    }
+
+    bool needInit() {return init;}
+
+    void setActive(bool status) {
+        active = status;
+        if (active) {
+             width = 168;
+            height = width/7;
+        } else {
+             width = 112;
+            height = width/7;            
+        }
+    }
+
+};
+
+Text words[4];
+
+void showText(GLuint text_tex[], int opt[], int xres, int yres)
+{
+    for (int i = 0; i < 4; i++) {
+        if (words[i].needInit() ) {
+            words[i].setAttr(text_tex[i], xres/2, yres/3-(i*50) );
+        }
+
+        words[i].setActive(opt[i]);
+        words[i].draw();
+    }
+};
