@@ -106,10 +106,22 @@ public:
 		delay = 0.1;
 	}
 };
-
+#define MAXBUTTONS 4
+typedef struct t_button {
+        Rect r;
+        char text[32];
+        int over;
+        int down;
+        int click;
+        float color[3];
+        float dcolor[3];
+        unsigned int text_color;
+} Button;
 
 class Global {
 public:
+    	Button button[MAXBUTTONS];
+	int nbuttons;
 	unsigned char keys[65536];
 	int xres, yres;
 	int movie, movieStep;
@@ -129,6 +141,7 @@ public:
 		logClose();
 	}
 	Global() {
+	    	nbuttons = 0;
 		logOpen();
 		camera[0] = camera[1] = 0.0;
 		movie=0;
@@ -596,9 +609,9 @@ public:
 		}
 	}
 
-	int checkKeys(XEvent *e) {
+/*	int checkKeys(XEvent *e) {
 		return 0;
-	}
+	}*/
 
 } credits;
 ///////////////////////////////////////////////////////////////////////////////
@@ -731,6 +744,56 @@ void initOpengl(void)
 
 void init() {
 
+	//initialize buttons...
+        gl.nbuttons=0;
+        //size and position
+        gl.button[gl.nbuttons].r.width = 140;
+        gl.button[gl.nbuttons].r.height = 60;
+        gl.button[gl.nbuttons].r.left = 20;
+        gl.button[gl.nbuttons].r.bot = 320;
+        gl.button[gl.nbuttons].r.right =
+           gl.button[gl.nbuttons].r.left + gl.button[gl.nbuttons].r.width;
+        gl.button[gl.nbuttons].r.top =
+           gl.button[gl.nbuttons].r.bot + gl.button[gl.nbuttons].r.height;
+        gl.button[gl.nbuttons].r.centerx =
+           (gl.button[gl.nbuttons].r.left + gl.button[gl.nbuttons].r.right) / 2;
+        gl.button[gl.nbuttons].r.centery =
+           (gl.button[gl.nbuttons].r.bot + gl.button[gl.nbuttons].r.top) / 2;
+        strcpy(gl.button[gl.nbuttons].text, "Start Game");
+        gl.button[gl.nbuttons].down = 0;
+        gl.button[gl.nbuttons].click = 0;
+        gl.button[gl.nbuttons].color[0] = 0.4f;
+        gl.button[gl.nbuttons].color[1] = 0.4f;
+        gl.button[gl.nbuttons].color[2] = 0.7f;
+        gl.button[gl.nbuttons].dcolor[0] = gl.button[gl.nbuttons].color[0] * 0.5f;
+        gl.button[gl.nbuttons].dcolor[1] = gl.button[gl.nbuttons].color[1] * 0.5f;
+        gl.button[gl.nbuttons].dcolor[2] = gl.button[gl.nbuttons].color[2] * 0.5f;
+        gl.button[gl.nbuttons].text_color = 0x00ffffff;
+        gl.nbuttons++;
+        gl.button[gl.nbuttons].r.width = 140;
+        gl.button[gl.nbuttons].r.height = 60;
+        gl.button[gl.nbuttons].r.left = 20;
+        gl.button[gl.nbuttons].r.bot = 160;
+        gl.button[gl.nbuttons].r.right =
+           gl.button[gl.nbuttons].r.left + gl.button[gl.nbuttons].r.width;
+        gl.button[gl.nbuttons].r.top = gl.button[gl.nbuttons].r.bot +
+           gl.button[gl.nbuttons].r.height;
+        gl.button[gl.nbuttons].r.centerx = (gl.button[gl.nbuttons].r.left +
+           gl.button[gl.nbuttons].r.right) / 2;
+        gl.button[gl.nbuttons].r.centery = (gl.button[gl.nbuttons].r.bot +
+           gl.button[gl.nbuttons].r.top) / 2;
+        strcpy(gl.button[gl.nbuttons].text, "Credits");
+        gl.button[gl.nbuttons].down = 0;
+        gl.button[gl.nbuttons].click = 0;
+        gl.button[gl.nbuttons].color[0] = 0.3f;
+        gl.button[gl.nbuttons].color[1] = 0.3f;
+        gl.button[gl.nbuttons].color[2] = 0.6f;
+        gl.button[gl.nbuttons].dcolor[0] = gl.button[gl.nbuttons].color[0] * 0.5f;
+        gl.button[gl.nbuttons].dcolor[1] = gl.button[gl.nbuttons].color[1] * 0.5f;
+        gl.button[gl.nbuttons].dcolor[2] = gl.button[gl.nbuttons].color[2] * 0.5f;
+        gl.button[gl.nbuttons].text_color = 0x00ffffff;
+        gl.nbuttons++;
+
 }
 
 int checkMouse(XEvent *e)
@@ -742,33 +805,55 @@ int checkMouse(XEvent *e)
 	static int savey = 0;
 	int i,x,y;
 	int lbutton=0;
+	int rbutton=0;
 	//
-	if (e->type != ButtonRelease && e->type != ButtonPress &&
-			e->type != MotionNotify)
-		return 0;
-	if (e->type == ButtonRelease) {
-		return 0;
-	}
-	if (e->type == ButtonPress) {
-		if (e->xbutton.button==1) {
-		    	lbutton = 1;
-			//Left button is down
-		}
-		if (e->xbutton.button==3) {
-			//Right button is down
-		}
-	}
-	x = e->xbutton.x;
-	y = e->xbutton.y;
-	if (e->type == MotionNotify) {
-		if (savex != e->xbutton.x || savey != e->xbutton.y) {
-			//Mouse moved
-			savex = e->xbutton.x;
-			savey = e->xbutton.y;
-		}
-	}
-	/*
-		for (i=0; i<gl.nbuttons; i++) {
+	 if (e->type == ButtonRelease)
+                return 0;
+        if (e->type == ButtonPress) {
+                if (e->xbutton.button==1) {
+                        //Left button is down
+                        lbutton=1;
+                }
+                if (e->xbutton.button==3) {
+                        //Right button is down
+                        rbutton=1;
+                        if (rbutton){}
+                }
+        }
+        x = e->xbutton.x;
+        y = e->xbutton.y;
+        y = gl.yres - y;
+        if (savex != e->xbutton.x || savey != e->xbutton.y) {
+                //Mouse moved
+                savex = e->xbutton.x;
+                savey = e->xbutton.y;
+        }
+	
+	for (i=0; i<gl.nbuttons; i++) {
+	     gl.button[i].over=0;
+                if (x >= gl.button[i].r.left &&
+                        x <= gl.button[i].r.right &&
+                        y >= gl.button[i].r.bot &&
+                        y <= gl.button[i].r.top) {
+                        gl.button[i].over=1;
+                        if (gl.button[i].over) {
+			   gl.button[i].down = 1;
+			    gl.button[i].click = 1;
+                              if (lbutton){
+                                if (i==0) {
+                                        //user clicked QUIT
+					printf("Credits was clicked!\n");
+                                        credits.display = !credits.display;
+                                }
+                                if (i==1) {
+                                        //user clicked button 0
+                                       // credits.display = !credits.display;
+                                }
+                        }
+                }
+	    }
+	}	
+		/*for (i=0; i<gl.nbuttons; i++) {
                 gl.button[i].over=0;
                 if (x >= gl.button[i].r.left &&
                         x <= gl.button[i].r.right &&
@@ -779,18 +864,19 @@ int checkMouse(XEvent *e)
                                 if (lbutton) {
                                         switch (i) {
                                             case 0: 
-           						gl.displayCredits = !gl.displayCredits;
+							printf("Credits was clicked!\n");
+           						credits.display = !credits.display;
                                                         break; 
-                                                case 1:
+                                             case 1:
 						    	printf("Credits was clicked!\n"); //to tell if it's working
-           						gl.displayCredits = !gl.displayCredits;
-							return 1;
+           						credits.display = !credits.display;
+							
                                         }
                                 }
                         }
                 }
-        }
-        */
+        }*/
+        
 		return 0;
 }
 
@@ -888,12 +974,12 @@ int checkKeys(XEvent *e)
 		case XK_Down:
 			break;
 
-		case XK_equal:
+		/*case XK_equal:
 			gl.delay -= 0.005;
 			if (gl.delay < 0.005)
 				gl.delay = 0.005;
 			break;
-
+		*/
 		case XK_minus:
 			gl.delay += 0.005;
 			break;
@@ -902,9 +988,9 @@ int checkKeys(XEvent *e)
 			return 1;
 			break;
 
-		case XK_c:
+	/*	case XK_c:
 			credits.display = !credits.display;
-			break;
+			break; */
 
 		case XK_m:
 			start.display = !start.display;
@@ -1061,6 +1147,43 @@ void render(void)
 		glEnd();
 		glPopMatrix();
 	}
+	///DRAWING BUTTONS///
+	 for (int i=0; i<gl.nbuttons; i++) {
+                if (gl.button[i].over) {
+                        int w=2;
+                        glColor3f(1.0f, 1.0f, 0.0f);
+                        //draw a highlight around button
+                        glLineWidth(3);
+                        glBegin(GL_LINE_LOOP);
+                                glVertex2i(gl.button[i].r.left-w,  gl.button[i].r.bot-w);
+                                glVertex2i(gl.button[i].r.left-w,  gl.button[i].r.top+w);
+                                glVertex2i(gl.button[i].r.right+w, gl.button[i].r.top+w);
+                                glVertex2i(gl.button[i].r.right+w, gl.button[i].r.bot-w);
+                                glVertex2i(gl.button[i].r.left-w,  gl.button[i].r.bot-w);
+                        glEnd();
+                        glLineWidth(1);
+                }
+                if (gl.button[i].down) {
+                        glColor3fv(gl.button[i].dcolor);
+                } else {
+                        glColor3fv(gl.button[i].color);
+                }
+                glBegin(GL_QUADS);
+                        glVertex2i(gl.button[i].r.left,  gl.button[i].r.bot);
+                        glVertex2i(gl.button[i].r.left,  gl.button[i].r.top);
+                        glVertex2i(gl.button[i].r.right, gl.button[i].r.top);
+                        glVertex2i(gl.button[i].r.right, gl.button[i].r.bot);
+                glEnd();
+                r.left = gl.button[i].r.centerx;
+                r.bot  = gl.button[i].r.centery-8;
+                r.center = 1;
+                if (gl.button[i].down) {
+                        ggprint16(&r, 0, gl.button[i].text_color, "Pressed!");
+                } else {
+                        ggprint16(&r, 0, gl.button[i].text_color, gl.button[i].text);
+                }
+        }
+
 	//
 	//========================
 	//Render the tile system
