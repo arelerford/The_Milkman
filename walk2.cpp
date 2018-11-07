@@ -357,37 +357,73 @@ public:
 	}
 };
 
-class Player {
+class Entity {
     public:
-        float xpos, ypos;
+        float x, y;
         float width, height;
+        
+        virtual void render () {
+
+        }
+
+        virtual void update () {
+
+        }
+
+        virtual bool checkCollison () {
+            return false;
+        }
+};
+
+class Player : public Entity {
+    public:
+        Player () {
+            
+        }
+
         Player(float _xpos, float _ypos, float _width, float _height) {
-            xpos = _xpos;
-            ypos = _ypos;
+            x = _xpos;
+            y = _ypos;
             width = _width;
             height = _height;
         }
 
-        void move (float x, float y) {
-            xpos += x;
-            ypos += y;        
+        void move (float nx, float ny) {
+            x += nx;
+            y += ny;        
         }
 
-        void render_player () {
+        virtual void render() {
             glColor3f (0.0f, 1.0f, 0.0f);
 
             glBegin(GL_QUADS);
 			    glTexCoord2f(0, 0); 
-                    glVertex2f(xpos, ypos);
+                    glVertex2f(x, y);
     			glTexCoord2f(0, 1); 
-                    glVertex2f(xpos, ypos + height);
+                    glVertex2f(x, y + height);
 			    glTexCoord2f(1, 1); 
-                    glVertex2f(xpos + width, ypos + height);
+                    glVertex2f(x + width, y + height);
     			glTexCoord2f(1, 0); 
-                    glVertex2f(xpos + width, ypos);
+                    glVertex2f(x + width, y);
 		    glEnd();
         }
+
+        virtual void update() {
+
+        }
+
+        void SpawnPlayer () {
+            
+        }
+
+        virtual bool checkCollison () {
+            return false;
+        }
 } player (100, 100, 75, 100);
+
+class Camera {
+    
+} mainCamera;
 
 Image img[3] = {
 "./images/walk.gif",
@@ -1358,7 +1394,7 @@ void render(void)
 	ggprint8b(&r, 16, c, "left arrow  <- walk left");
 	ggprint8b(&r, 16, c, "frame: %i", gl.walkFrame);
 
-	player.render_player();
+	player.render();
 
 	start.Display();
 	credits.Display();
