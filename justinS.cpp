@@ -2,7 +2,42 @@
 // For the Milkman Project. Software Enginering.
 
 #include <GL/glx.h>
+#include <list>
 #include "fonts.h"
+#include "Entity.h"
+
+using namespace std;
+
+void Entity::render (void) {
+
+}
+
+void Entity::update (void) {
+
+}
+
+bool Entity::checkCollision (Entity e) {
+    return false;
+}
+
+// Manageges Physics interactions
+class CollisonManager {
+    public:
+        //list<Entity> enities;
+        
+        CollisonManager () {
+            //enities.clear();
+        }
+
+        void addEntity (Entity e) {
+            //enities.insert(e);
+        }
+
+        void checkCollisons () {
+            // FOR ALL NON-STATIC ENTITIES CHECK COLLISONS BY BOUNDING BOX.
+            // AND ONLY DO THIS IF THE ENITIES ARE CLOSE TOGETHER.
+        }
+} physicsManager;
 
 // TODO: Modifie to allow for offsets also look at paramters for
 //       ggprint8b(Rect, int, int, string) and what they do.

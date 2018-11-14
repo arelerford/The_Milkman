@@ -24,6 +24,7 @@
 #include "log.h"
 //#include "ppm.h"
 #include "fonts.h"
+#include "Entity.h"
 
 //defined types
 typedef double Flt;
@@ -357,10 +358,11 @@ public:
 	}
 };
 
-class Entity {
+/*class Entity {
     public:
         float x, y;
         float width, height;
+        bool isStatic;
         
         virtual void render () {
 
@@ -373,7 +375,7 @@ class Entity {
         virtual bool checkCollison () {
             return false;
         }
-};
+};*/
 
 class Player : public Entity {
     public:
@@ -412,8 +414,9 @@ class Player : public Entity {
 
         }
 
-        void SpawnPlayer () {
-            
+        void SpawnPlayer (float nx, float ny) {
+            x = nx;
+            y = ny;
         }
 
         virtual bool checkCollison () {
