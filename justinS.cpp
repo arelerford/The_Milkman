@@ -5,6 +5,7 @@
 #include <list>
 #include "fonts.h"
 #include "Entity.h"
+#include <string.h>
 
 using namespace std;
 
@@ -16,26 +17,40 @@ void Entity::update (void) {
 
 }
 
-bool Entity::checkCollision (Entity e) {
+bool Entity::checkCollision (Entity& e) {
+    if (x < (e.x + e.width) && (x + width) > e.x && y < (e.y + e.height) &&
+        (y + height) > e.y) {
+            return true;
+    }
+    
     return false;
 }
 
 // Manageges Physics interactions
 class CollisonManager {
     public:
-        //list<Entity> enities;
+        list<Entity*> enities;
         
-        CollisonManager () {
-            //enities.clear();
+        CollisonManager () 
+        {
+            enities.clear();
         }
 
-        void addEntity (Entity e) {
-            //enities.insert(e);
+        void addEntity (Entity* e) 
+        {
+            enities.insert(enities.begin (), e);
         }
 
-        void checkCollisons () {
+        void checkCollisons () 
+        {
             // FOR ALL NON-STATIC ENTITIES CHECK COLLISONS BY BOUNDING BOX.
             // AND ONLY DO THIS IF THE ENITIES ARE CLOSE TOGETHER.
+
+            // Foreach elementing in the enities list:
+            //      If a entity is non-static:
+            //          Compare it to each entity if there is a collison and
+            //              the entities are not far apart:
+            //              Move the enitites so that it is not collideing with the other.
         }
 } physicsManager;
 
