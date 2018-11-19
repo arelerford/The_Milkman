@@ -10,4 +10,5 @@ class Entity {
         void render(void);
         void update(void);
         bool checkCollision(Entity& e);
+        float distance (Entity& e);
 };

@@ -7,6 +7,8 @@
 #include "Entity.h"
 #include "CollisonManager.h"
 #include <string.h>
+#include <math.h>
+
 
 using namespace std;
 
@@ -16,6 +18,17 @@ void Entity::render (void) {
 
 void Entity::update (void) {
 
+}
+
+float Entity::distance (Entity& e) {
+    float dist = 0.0;
+
+    float dx = (e.x - x);
+    float dy = (e.y - y);
+
+    dist = sqrt ((dx * dx) + (dy * dy));
+
+    return dist;
 }
 
 bool Entity::checkCollision (Entity& e) {
@@ -28,6 +41,19 @@ bool Entity::checkCollision (Entity& e) {
 }
 
 // Manageges Physics interactions
+void managerCollison () {
+    //CollisonManager *CollisonManager::s_instance = 0;
+
+    for (unsigned int i = 0; 
+        i < CollisonManager::instance()->nonStaticEntities.size(); i++) {
+            //Entity e1 = CollisonManager::instance()->nonStaticEntities[i];
+        for (unsigned int j = 0; 
+            j < CollisonManager::instance()->entities.size(); j++) {
+            // Get the enitiy i's distance to entity's j's distance.
+            //Entity e2 = CollisonManager::instance()->entities[j];
+        }
+    }
+}
 
 // TODO: Modifie to allow for offsets also look at paramters for
 //       ggprint8b(Rect, int, int, string) and what they do.
