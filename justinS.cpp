@@ -5,6 +5,7 @@
 #include <list>
 #include "fonts.h"
 #include "Entity.h"
+#include "CollisonManager.h"
 #include <string.h>
 
 using namespace std;
@@ -27,32 +28,6 @@ bool Entity::checkCollision (Entity& e) {
 }
 
 // Manageges Physics interactions
-class CollisonManager {
-    public:
-        list<Entity*> enities;
-        
-        CollisonManager () 
-        {
-            enities.clear();
-        }
-
-        void addEntity (Entity* e) 
-        {
-            enities.insert(enities.begin (), e);
-        }
-
-        void checkCollisons () 
-        {
-            // FOR ALL NON-STATIC ENTITIES CHECK COLLISONS BY BOUNDING BOX.
-            // AND ONLY DO THIS IF THE ENITIES ARE CLOSE TOGETHER.
-
-            // Foreach elementing in the enities list:
-            //      If a entity is non-static:
-            //          Compare it to each entity if there is a collison and
-            //              the entities are not far apart:
-            //              Move the enitites so that it is not collideing with the other.
-        }
-} physicsManager;
 
 // TODO: Modifie to allow for offsets also look at paramters for
 //       ggprint8b(Rect, int, int, string) and what they do.
