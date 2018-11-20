@@ -28,6 +28,7 @@
 #include "Entity.h"
 #include "default.h"
 #include "isaacL.h"
+#include "austinR.h"
 
 //defined types
 typedef double Flt;
@@ -46,6 +47,7 @@ typedef Flt	Matrix[4][4];
 //constants
 const float timeslice = 1.0f;
 const float gravity = -0.2f;
+const int Max_BULLETS = 1;
 #define ALPHA 1
 
 //function prototypes
@@ -772,6 +774,29 @@ int checkKeys(XEvent *e)
 		return 0;
 	}
 	(void)shift;
+	
+	if (key == XK_d) {
+	    struct timespec bt;
+	    clock_gettime(CLOCK_REALTIME, &bt);
+	    double ts = timers.timeDiff(&g.bulletTimer, &bt);
+	    if (ts > 0.1) {
+		timers.timeCopy(&g.bulletTimer, &bt);
+		//shoot
+		if (g.nbullets < MAX_BULLETS) {
+		    Bullet *b = &g.barr[g.nbullets];
+		    timers.timeCopy(&b->time, &bt);
+		    b->pos[0] = player.x;
+		    b->pos[1] = player.y;
+		    b->vel[0] = 40;
+		    b->vel[1] = 0;
+		    b->color[0] = 1.0f;
+		    b->color[1] = 1.0f;
+		    b->color[2] = 1.0f;
+		    ++g.nbullets;
+		}
+
+	    }
+	}
 
 	if (screen.start->display)	      return screen.start->checkKey(key);
 	else if (screen.credits->display) return screen.credits->checkKey(key);
@@ -890,6 +915,48 @@ void physics(void)
 		gl.ball_vel[1] -= 0.9;
 	}
 	gl.ball_pos[1] += gl.ball_vel[1];
+
+/*	//Update bullet positions
+	struct timespec bt;
+	clock_gettime(CLOCK_REALTIME, &bt);
+	int i=0;
+	while (i <g.nbullets) {
+	    Bullet *b = &g.barr[i];
+	    double ts = timers.timeDiff (&b->time, &bt);
+	    if (ts >2.0) {
+		memcpy(&g.barr[i], &g.barr[g.nbullets-1],
+			sizeof(Bullet));
+		g.nbullets--;
+		continue;
+	    }
+	    //move bullet
+	    b->pos[0] += 40;
+	    b->pos[1] += 0;
+
+	}
+    if (gl.keys[XK_d]) {
+        //a little time between each bullet
+        struct timespec bt;
+        clock_gettime(CLOCK_REALTIME, &bt);
+        double ts = timers.timeDiff(&g.bulletTimer, &bt);
+        if (ts > 0.1) {
+            timers.timeCopy(&g.bulletTimer, &bt);
+            if (g.nbullets < MAX_BULLETS) {
+                //shoot a bullet...
+                //Bullet *b = new Bullet;
+                Bullet *b = &g.barr[g.nbullets];
+                timers.timeCopy(&b->time, &bt);
+                b->pos[0] = player.x;
+                b->pos[1] = player.y;
+                b->vel[0] = 40;
+                b->vel[1] = 0;
+                b->color[0] = 1.0f;
+                b->color[1] = 1.0f;
+                b->color[2] = 1.0f;
+                g.nbullets++;
+            }
+	}
+    }*/	
 }
 
 void render(void)
@@ -1143,6 +1210,26 @@ void render(void)
 	screen.start->Display(&gl);
 	screen.credits->Display(&gl);
 	screen.level_1->Display(&gl);
+
+    Bullet *b = &g.barr[0];
+    for (int i=0; i<g.nbullets; i++) {
+        Log("draw bullet...\n");
+        glColor3f(1.0, 1.0, 1.0);
+        glBegin(GL_POINTS);
+            glVertex2f(b->pos[0],      b->pos[1]);
+            glVertex2f(b->pos[0]-1.0f, b->pos[1]);
+            glVertex2f(b->pos[0]+1.0f, b->pos[1]);
+            glVertex2f(b->pos[0],      b->pos[1]-1.0f);
+            glVertex2f(b->pos[0],      b->pos[1]+1.0f);
+            glColor3f(0.8, 0.8, 0.8);
+            glVertex2f(b->pos[0]-1.0f, b->pos[1]-1.0f);
+            glVertex2f(b->pos[0]-1.0f, b->pos[1]+1.0f);
+            glVertex2f(b->pos[0]+1.0f, b->pos[1]-1.0f);
+            glVertex2f(b->pos[0]+1.0f, b->pos[1]+1.0f);
+        glEnd();
+        ++b;
+    }	
+
 }
 
 int defaultKeys(int key)
