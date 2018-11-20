@@ -4,66 +4,156 @@
 #include <GL/glx.h>
 #include <list>
 #include "fonts.h"
+#include <list>
+#include <algorithm>
 #include "Entity.h"
 #include "CollisonManager.h"
 #include <string.h>
 #include <math.h>
+#include <iostream>
 
 
 using namespace std;
 
-void Entity::render (void) {
+//CollisonManager *CollisonManager::instance = 0;
+
+Entity::Entity ()
+{
+    x = 0;
+    y = 0;
+    width = 0;
+    height = 0;
+    isStatic = true;
+}
+
+Entity::Entity (float _x, float _y, float _width, float _height, bool _isStatic) 
+{
+    x = _x;
+    y = _y;
+    width = _width;
+    height = _height;
+    isStatic = _isStatic;
+}
+
+void Entity::render (void) 
+{
 
 }
 
-void Entity::update (void) {
+void Entity::update (void) 
+{
 
 }
 
-float Entity::distance (Entity& e) {
+float Entity::distance (Entity* e) 
+{
     float dist = 0.0;
 
-    float dx = (e.x - x);
-    float dy = (e.y - y);
+    float dx = (e->x - x);
+    float dy = (e->y - y);
 
     dist = sqrt ((dx * dx) + (dy * dy));
 
     return dist;
 }
 
-bool Entity::checkCollision (Entity& e) {
-    if (x < (e.x + e.width) && (x + width) > e.x && y < (e.y + e.height) &&
-        (y + height) > e.y) {
+bool Entity::checkCollision (Entity* e) 
+{
+    if (x < (e->x + e->width) && (x + width) > e->x && y < (e->y + e->height) &&
+        (y + height) > e->y) {
             return true;
     }
     
     return false;
 }
 
+void Entity::onCollision()
+{
+    
+}
+
+void CollisonManager::add (Entity* e)
+{
+    entities.push_back(e);
+
+    if (!e->isStatic) {
+        nonStaticEntities.push_back (e);
+    }
+}
+
+void CollisonManager::remove (Entity* e)
+{
+    entities.remove(e);
+
+    if (!e->isStatic) {
+        nonStaticEntities.remove(e);
+    }
+}
+
+Entity* CollisonManager::getNonStaticEntity (int i)
+{
+    int count = 0;
+    for (list<Entity*>::const_iterator ci = nonStaticEntities.begin(); ci != nonStaticEntities.end(); ++ci) {
+        if (i == count) {
+            return *ci;
+        }
+
+        count++;
+    }
+
+    return NULL;
+}
+
+Entity* CollisonManager::getEntity (int i)
+{
+    int count = 0;
+    for (list<Entity*>::const_iterator ci = entities.begin(); ci != entities.end(); ++ci) {
+        if (i == count) {
+            return *ci;
+        }
+
+        count++;
+    }
+
+    return NULL;
+}
+
 // Manageges Physics interactions
-void managerCollison () {
-    //CollisonManager *CollisonManager::s_instance = 0;
+void managerCollison ()
+{
+    cout << CollisonManager::getInstance().nonStaticEntities.size();
 
     for (unsigned int i = 0; 
-        i < CollisonManager::instance()->nonStaticEntities.size(); i++) {
-            //Entity e1 = CollisonManager::instance()->nonStaticEntities[i];
+            i < CollisonManager::getInstance().nonStaticEntities.size(); 
+            i++) {
+        Entity* e1 = CollisonManager::getInstance().getNonStaticEntity(i);
         for (unsigned int j = 0; 
-            j < CollisonManager::instance()->entities.size(); j++) {
-            // Get the enitiy i's distance to entity's j's distance.
-            //Entity e2 = CollisonManager::instance()->entities[j];
+            j < CollisonManager::getInstance().entities.size(); 
+            j++) {
+            Entity* e2 = CollisonManager::getInstance().getEntity(j);
+
+            if (e1->distance (e2) < 10.0) {
+                bool collison = e1->checkCollision(e2);
+                if (collison) {
+                    cout << "COLLISON!\n";
+                    e1->onCollision();
+                    e2->onCollision();           
+                }
+            }
         }
     }
 }
 
-// TODO: Modifie to allow for offsets also look at paramters for
-//       ggprint8b(Rect, int, int, string) and what they do.
-//       ggprint8b(Rect, ,color, string to draw) 
+/*CollisonManager* getCollisonManager () 
+{
+    return &cm;
+}*/
+
 void show_credits_justin(Rect *r)
 {
     ggprint16(r, 150, 0, "Justin S.");
 }
 
-// TODO: Animate image.
 void show_justin_image (int x, int y, GLuint textid)
 {
     glColor3f (1.0f, 1.0f, 1.0f);

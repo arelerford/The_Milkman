@@ -1,44 +1,35 @@
 // Author: Justin Selsor
 
+#ifndef COLLISONMANAGER_H_
+#define COLLISIONMANGER_H_
+
 #include <list>
+#include <algorithm>
+#include "Entity.h"
 
 using namespace std;
 
 class CollisonManager {
     public:
-        void add (Entity* e) 
-        {
-            entities.push_back(e);
 
-            if (!e->isStatic) {
-                nonStaticEntities.push_back (e);
-            }
-        }
-        
-        void remove (Entity* e)
+        static CollisonManager& getInstance()
         {
-            entities.remove(e);
-
-            if (!e->isStatic) {
-                nonStaticEntities.remove(e);
-            }
+            static CollisonManager instance;
+            return instance;
         }
 
         list<Entity*> entities;
         list<Entity*> nonStaticEntities;
 
-        // Implmentation of a singleton pattern.
-        static CollisonManager *instance() {
-            if (!s_instance)
-                s_instance = new CollisonManager();
-            return s_instance;
-        }
+        void add (Entity*);
+        void remove (Entity*);
+        Entity* getNonStaticEntity (int);
+        Entity* getEntity (int);
+
     private:
-        static CollisonManager *s_instance;
-        CollisonManager () {
-            
-        }
+        CollisonManager () {}
+        CollisonManager (CollisonManager const&); // Don't implement
+        void operator = (CollisonManager const&); // Don't implement
 };
 
-// This may not be the best way to do this, but it works for now.
-CollisonManager *CollisonManager::s_instance = 0;
+#endif
