@@ -1,0 +1,9 @@
+When a entity is created add it to the entites list
+	CollisonManager::add (Entity*);
+
+To remove an entity
+	CollisonManager::remove (Entity*);
+
+To get an entity from a enitiy list
+	Entity* nonStaticE = CollisonManager::getNonStaticEntity (int);
+	Entity* entity = CollisonManager::getEntity (int);
