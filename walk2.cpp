@@ -29,6 +29,7 @@
 #include "default.h"
 #include "isaacL.h"
 #include "austinR.h"
+#include "CollisonManager.h"
 
 //defined types
 typedef double Flt;
@@ -352,23 +353,29 @@ Image img[3] = {
 
 class Player : public Entity {
     public:
-        Player () {
-            
+        Player () 
+        {
+            CollisonManager::getInstance().add(this);
         }
 
-        Player(float _xpos, float _ypos, float _width, float _height) {
+        Player(float _xpos, float _ypos, float _width, float _height) 
+        {
             x = _xpos;
             y = _ypos;
             width = _width;
             height = _height;
+            isStatic = false;
+            CollisonManager::getInstance().add(this);
         }
 
-        void move (float nx, float ny) {
+        void move (float nx, float ny) 
+        {
             x += nx;
             y += ny;        
         }
 
-        virtual void render() {
+        virtual void render() 
+        {
             glColor3f (0.0f, 1.0f, 0.0f);
 
             glBegin(GL_QUADS);
@@ -383,19 +390,82 @@ class Player : public Entity {
 		    glEnd();
         }
 
-        virtual void update() {
+        virtual void update() 
+        {
 
         }
 
-        void SpawnPlayer (float nx, float ny) {
+        void SpawnPlayer (float nx, float ny) 
+        {
             x = nx;
             y = ny;
         }
 
-        virtual bool checkCollison () {
+        virtual bool checkCollison () 
+        {
             return false;
         }
 } player (100, 100, 75, 100);
+
+class Enemy : public Entity {
+    private:
+        float bound1, bound2;
+    public:
+        float walkDist;        
+        float walkSpeed;
+
+        Enemy () 
+        {
+            CollisonManager::getInstance().add(this);
+        }
+    
+        Enemy (float _xpos, float _ypos, float _width, float _height, float _walkDist, float _walkSpeed)
+        {
+            x = _xpos;
+            y = _ypos;
+            width = _width;
+            height = _height;
+            walkDist = _walkDist;
+            walkSpeed = _walkSpeed;
+
+            bound1 = x + walkDist;
+            bound2 = x - walkDist;
+
+            CollisonManager::getInstance().add(this);
+        }
+
+        virtual void render ()
+        {
+            glColor3f (1.0f, 0.0f, 0.0f);
+
+            glBegin(GL_QUADS);
+			    glTexCoord2f(0, 0); 
+                    glVertex2f(x, y);
+    			glTexCoord2f(0, 1); 
+                    glVertex2f(x, y + height);
+			    glTexCoord2f(1, 1); 
+                    glVertex2f(x + width, y + height);
+    			glTexCoord2f(1, 0); 
+                    glVertex2f(x + width, y);
+		    glEnd();
+        }
+
+        virtual void update ()
+        {
+            if (x >= bound1)
+                walkSpeed *= -1;
+            else if (x <= bound2)
+                walkSpeed *= -1;
+
+            move (x + walkSpeed, 0);
+        }
+
+        void move (float nx, float ny)
+        {
+            x = nx;
+            y = ny;
+        }
+};
 
 class Camera {
     

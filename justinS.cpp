@@ -24,6 +24,8 @@ Entity::Entity ()
     width = 0;
     height = 0;
     isStatic = true;
+
+    CollisonManager::getInstance().add(this);
 }
 
 Entity::Entity (float _x, float _y, float _width, float _height, bool _isStatic) 
@@ -33,6 +35,9 @@ Entity::Entity (float _x, float _y, float _width, float _height, bool _isStatic)
     width = _width;
     height = _height;
     isStatic = _isStatic;
+
+    CollisonManager::getInstance().add(this);
+    
 }
 
 void Entity::render (void) 
@@ -143,11 +148,6 @@ void managerCollison ()
         }
     }
 }
-
-/*CollisonManager* getCollisonManager () 
-{
-    return &cm;
-}*/
 
 void show_credits_justin(Rect *r)
 {
