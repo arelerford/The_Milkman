@@ -857,7 +857,7 @@ int checkKeys(XEvent *e)
 		    timers.timeCopy(&b->time, &bt);
 		    b->pos[0] = player.x;
 		    b->pos[1] = player.y;
-		    b->vel[0] = 40;
+		    b->vel[0] = 30;
 		    b->vel[1] = 0;
 		    b->color[0] = 1.0f;
 		    b->color[1] = 1.0f;
@@ -986,7 +986,7 @@ void physics(void)
 	}
 	gl.ball_pos[1] += gl.ball_vel[1];
 
-/*	//Update bullet positions
+	//Update bottle positions
 	struct timespec bt;
 	clock_gettime(CLOCK_REALTIME, &bt);
 	int i=0;
@@ -999,12 +999,30 @@ void physics(void)
 		g.nbullets--;
 		continue;
 	    }
-	    //move bullet
-	    b->pos[0] += 40;
-	    b->pos[1] += 0;
-
+	    //move bottle
+	    b->pos[0] += b->vel[0];
+	    b->pos[1] += b->vel[1];
+            if (b->pos[0] < 0.0) {
+                b->pos[0] += (float)gl.xres;
+            }
+            else if (b->pos[0] > (float)gl.xres) {
+		memcpy(&g.barr[i], &g.barr[g.nbullets-1],
+                        sizeof(Bullet));
+                g.nbullets--;
+                continue; 
+            }
+            else if (b->pos[1] < 0.0) {
+                memcpy(&g.barr[i], &g.barr[g.nbullets-1],
+                        sizeof(Bullet));
+                g.nbullets--;
+                continue;
+            }
+            else if (b->pos[1] > (float)gl.yres) {
+                b->pos[1] -= (float)gl.yres;
+            }
+	    i++;
 	}
-    if (gl.keys[XK_d]) {
+  /*  if (gl.keys[XK_d]) {
         //a little time between each bullet
         struct timespec bt;
         clock_gettime(CLOCK_REALTIME, &bt);
@@ -1018,7 +1036,7 @@ void physics(void)
                 timers.timeCopy(&b->time, &bt);
                 b->pos[0] = player.x;
                 b->pos[1] = player.y;
-                b->vel[0] = 40;
+                b->vel[0] = 20;
                 b->vel[1] = 0;
                 b->color[0] = 1.0f;
                 b->color[1] = 1.0f;
@@ -1313,7 +1331,7 @@ int defaultKeys(int key)
 			timers.recordTime(&timers.walkTime);
 			gl.walk ^= 1;
 			break;
-
+		
 		case XK_e:
 			gl.exp.pos[0] = 200.0;
 			gl.exp.pos[1] = -60.0;

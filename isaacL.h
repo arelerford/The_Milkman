@@ -108,7 +108,7 @@ public:
 	const char *name = "level_1";
 	// Images
 	Image background_img[1] = {
-		"./images/level1/lev1back.png"
+		"./images/level1/levback.png"
 		// "./images/level1/OOB.png"
 	};
 	int background_num = sizeof background_img / sizeof *background_img;
