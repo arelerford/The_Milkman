@@ -68,6 +68,7 @@ public:
 	Vec box[20];
 	Sprite exp;
 	Sprite exp44;
+	Sprite bottleThrow;
 	Vec ball_pos;
 	Vec ball_vel;
 	//camera is centered at (0,0) lower-left of screen. 

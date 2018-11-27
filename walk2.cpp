@@ -48,7 +48,7 @@ typedef Flt	Matrix[4][4];
 //constants
 const float timeslice = 1.0f;
 const float gravity = -0.2f;
-const int Max_BULLETS = 1;
+const int Max_BULLETS = 5;
 #define ALPHA 1
 
 //function prototypes
@@ -118,6 +118,8 @@ Global::Global()
 	walk=0;
 	walkFrame=0;
 	walkImage=NULL;
+	bottleThrow.frame=0;
+	bottleThrow.image=NULL;
 	MakeVector(ball_pos, 520.0, 0, 0);
 	MakeVector(ball_vel, 0, 0, 0);
 	delay = 0.1;
@@ -326,10 +328,11 @@ void Image::init(const char *fname)
 		if (!ppmFlag)
 			unlink(ppmname);
 };
-Image img[3] = {
+Image img[4] = {
 "./images/walk.gif",
 "./images/exp.png",
-"./images/exp44.png"
+"./images/exp44.png",
+"./images/player/bottle_throw.png"
 };
 //-----------------------------------------------------------------------------
 /*class Entity {
@@ -635,6 +638,11 @@ void initOpengl(void)
 	h = img[2].height;
 	//create opengl texture elements
 	glGenTextures(1, &gl.exp44.tex);
+	
+	w = img[3].width;
+	h = img[3].height;
+	
+	glGenTextures(1, &gl.bottleThrow.tex);
 	//-------------------------------------------------------------------------
 	//this is similar to a sprite graphic
 	glBindTexture(GL_TEXTURE_2D, gl.exp44.tex);
@@ -1022,29 +1030,6 @@ void physics(void)
             }
 	    i++;
 	}
-  /*  if (gl.keys[XK_d]) {
-        //a little time between each bullet
-        struct timespec bt;
-        clock_gettime(CLOCK_REALTIME, &bt);
-        double ts = timers.timeDiff(&g.bulletTimer, &bt);
-        if (ts > 0.1) {
-            timers.timeCopy(&g.bulletTimer, &bt);
-            if (g.nbullets < MAX_BULLETS) {
-                //shoot a bullet...
-                //Bullet *b = new Bullet;
-                Bullet *b = &g.barr[g.nbullets];
-                timers.timeCopy(&b->time, &bt);
-                b->pos[0] = player.x;
-                b->pos[1] = player.y;
-                b->vel[0] = 20;
-                b->vel[1] = 0;
-                b->color[0] = 1.0f;
-                b->color[1] = 1.0f;
-                b->color[2] = 1.0f;
-                g.nbullets++;
-            }
-	}
-    }*/	
 }
 
 void render(void)
@@ -1349,9 +1334,11 @@ int defaultKeys(int key)
 			break;
 
 		case XK_Left:
+			
 			break;
 
 		case XK_Right:
+			
 			break;
 
 		case XK_Up:
