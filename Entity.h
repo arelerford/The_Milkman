@@ -3,12 +3,14 @@
 #ifndef ENTITIY_H_
 #define ENTITIY_H_
 
-#include <string.h>
+#include <string>
+
+using namespace std;
 
 class Entity {
     public:
-        Entity();
-        Entity (float, float, float, float, bool);
+        explicit Entity (string, float, float, float, float, bool);
+        string name;
         float x, y;
         float width, height;
         bool isStatic;
@@ -17,6 +19,10 @@ class Entity {
         bool checkCollision(Entity* e);
         float distance (Entity* e);
         void onCollision(void);
+    protected:
+        void init (string, float, float, float, float, bool);
+    private:
+        Entity();
 };
 
 #endif

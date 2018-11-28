@@ -30,6 +30,7 @@
 #include "isaacL.h"
 #include "austinR.h"
 #include "CollisonManager.h"
+#include "Player.h"
 
 //defined types
 typedef double Flt;
@@ -354,7 +355,7 @@ Image img[4] = {
         }
 };*/
 
-class Player : public Entity {
+/*class Player : public Entity {
     public:
         Player () 
         {
@@ -408,9 +409,11 @@ class Player : public Entity {
         {
             return false;
         }
-} player (100, 100, 75, 100);
+} player (100, 100, 75, 100);*/
 
-class Enemy : public Entity {
+Player player ("Player", 100, 100, 75, 100, false);
+
+/*class Enemy : public Entity {
     private:
         float bound1, bound2;
     public:
@@ -468,7 +471,7 @@ class Enemy : public Entity {
             x = nx;
             y = ny;
         }
-};
+};*/
 
 class Camera {
     

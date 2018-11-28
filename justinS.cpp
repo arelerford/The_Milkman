@@ -7,7 +7,9 @@
 #include <list>
 #include <algorithm>
 #include "Entity.h"
+#include "Player.h"
 #include "CollisonManager.h"
+#include <string>
 #include <string.h>
 #include <math.h>
 #include <iostream>
@@ -15,29 +17,26 @@
 
 using namespace std;
 
-//CollisonManager *CollisonManager::instance = 0;
-
 Entity::Entity ()
 {
-    x = 0;
-    y = 0;
-    width = 0;
-    height = 0;
-    isStatic = true;
-
-    CollisonManager::getInstance().add(this);
+    init ("Blank Entity Constuctor Called", 0, 0, 0, 0, true);
 }
 
-Entity::Entity (float _x, float _y, float _width, float _height, bool _isStatic) 
+Entity::Entity (string _name, float _x, float _y, float _width, float _height, bool _isStatic) 
+{   
+    init (_name, _x, _y, _width, _height, _isStatic);
+}
+
+void Entity::init (string _name, float _x, float _y, float _width, float _height, bool _isStatic)
 {
+    name = _name;
     x = _x;
     y = _y;
     width = _width;
     height = _height;
     isStatic = _isStatic;
-
-    CollisonManager::getInstance().add(this);
     
+    CollisonManager::getInstance().add(this);
 }
 
 void Entity::render (void) 
@@ -79,6 +78,8 @@ void Entity::onCollision()
 
 void CollisonManager::add (Entity* e)
 {
+    //cout << e->name << ": added to list\n";
+
     entities.push_back(e);
 
     if (!e->isStatic) {
@@ -121,6 +122,18 @@ Entity* CollisonManager::getEntity (int i)
     }
 
     return NULL;
+}
+
+void Player::render () 
+{
+    glColor3f (0.0f, 1.0f, 0.0f);
+
+    glBegin(GL_QUADS);
+        glTexCoord2f(0, 0); glVertex2f(x, y);
+    	glTexCoord2f(0, 1); glVertex2f(x, y + height);
+		glTexCoord2f(1, 1); glVertex2f(x + width, y + height);
+    	glTexCoord2f(1, 0); glVertex2f(x + width, y);
+	glEnd();
 }
 
 // Manageges Physics interactions
