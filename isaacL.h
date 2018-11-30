@@ -58,10 +58,11 @@ public:
     "./images/startmenu/cloud8.jpg"
 	};
 	int cloud_num = sizeof cloud_img / sizeof *(cloud_img);
-	Image text_img[3] = {
+	Image text_img[4] = {
         "./images/startmenu/mainmenu.png",
         "./images/startmenu/levels.png",
-        "./images/startmenu/credits.png"
+        "./images/startmenu/credits.png",
+        "./images/startmenu/controls.png"
 	};
 	int text_num = sizeof text_img / sizeof *(text_img);
 
@@ -72,7 +73,7 @@ public:
 
 	// Variables
 	bool display = false;
-	int opt[3] = { 1, 0, 0 };
+	int opt[4] = { 1, 0, 0, 0 };
 	int opt_size = sizeof opt / sizeof *opt;
 
 	// Methods
@@ -102,7 +103,21 @@ public:
 	void Display(Global*);
 	int checkKey(int);
 };
+////alex code///
+class Controls{
+public:
+        const char *name = "controls";
+	
 
+        //variables
+        bool display = false;
+
+        //Methods
+        Controls();
+        void Display();
+        int checkKey(int);
+};
+//////
 class Level_1 {
 public:
 	const char *name = "level_1";
@@ -130,16 +145,19 @@ typedef struct Screens {
 	Start *start;
 	Level_1 *level_1;
 	Credits *credits;
-	bool *displays[3];
+    Controls *controls;
+	bool *displays[4];
 	Screens() 
 	{
 		start   = new Start;
 		level_1 = new Level_1;
 		credits = new Credits;
+        controls = new Controls;
 
 		displays[0] = &start->display;
 		displays[1] = &level_1->display;
 		displays[2] = &credits->display;
+        displays[3] = &controls->display;
 	}
 } Screens;
 

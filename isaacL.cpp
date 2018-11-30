@@ -204,11 +204,11 @@ void Text::setLoc(int x, int y)
     ypos = y;
 }
 
-Text words[3];
+Text words[4];
 
 void showText(GLuint text_tex[], int opt[], int xres, int yres)
 {
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 4; i++) {
         words[i].setAttr(text_tex[i], xres/2, yres/3-(i*50) );
         words[i].setActive(opt[i]);
         words[i].draw();
@@ -282,9 +282,9 @@ int Start::checkKey(int key)
             return 1;
 
         case XK_Up:
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < 4; i++) {
                 if (opt[i]) {
-                    opt[(i+2) % 3] = 1;
+                    opt[(i+3) % 4] = 1;
                     opt[i] = 0;
                     break;
                 }
@@ -292,9 +292,9 @@ int Start::checkKey(int key)
             break;
 
         case XK_Down:
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < 4; i++) {
                 if (opt[i]) {
-                    opt[(i+1) % 3] = 1;
+                    opt[(i+1) % 4] = 1;
                     opt[i] = 0;
                     break;
                 }
@@ -371,8 +371,8 @@ int Credits::checkKey(int key)
     switch (key) {
         case XK_Escape:
         {
-            int tmp[3] = {1, 0, 0};
-            testFunct(screen, tmp, 3);
+            int tmp[4] = {1, 0, 0, 0};
+            testFunct(screen, tmp, 4);
         }
         break;
     }
@@ -447,8 +447,8 @@ int Level_1::checkKey(int key)
     switch (key) {            
         case XK_Escape:
         {
-            int tmp[3] = {1, 0, 0};
-            testFunct(screen, tmp, 3);
+            int tmp[4] = {1, 0, 0, 0};
+            testFunct(screen, tmp, 4);
         }
         break;
 
@@ -463,6 +463,34 @@ int Level_1::checkKey(int key)
     return 0;
 };
 
+///alex's code will move later///
+Controls::Controls()
+{
+
+}
+void Controls::Display()
+{
+    if (display) {
+        //Clear the screen
+        glClearColor(1, 1, 1, 1);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+    }
+};
+
+int Controls::checkKey(int key)
+{
+    switch (key) {
+        case XK_Escape:
+        {
+            int tmp[4] = {1, 0, 0, 0 };
+            testFunct(screen, tmp, 4);
+        }
+        break;
+    }
+    return 0;
+};
+//////////////////////////////////////////////
 void testFunct(Screens screen, int opt[], int size)
 {
     for (int i = 0; i < size; i++) {

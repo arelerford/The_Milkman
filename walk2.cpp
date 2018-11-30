@@ -72,7 +72,7 @@ struct Coord {
 //start menu prototypes 
 void startMenu();
 void creditScreen();
-
+void controlsScreen();
 //-----------------------------------------------------------------------------
 //Setup timers
 Timers::Timers()
@@ -882,6 +882,7 @@ int checkKeys(XEvent *e)
 	if (screen.start->display)	      return screen.start->checkKey(key);
 	else if (screen.credits->display) return screen.credits->checkKey(key);
 	else if (screen.level_1->display) return screen.level_1->checkKey(key);
+    else if (screen.controls->display) return screen.controls->checkKey(key);
 	else return defaultKeys(key);
 }
 
@@ -1286,6 +1287,7 @@ void render(void)
 	screen.start->Display(&gl);
 	screen.credits->Display(&gl);
 	screen.level_1->Display(&gl);
+    screen.controls->Display();
 
     Bullet *b = &g.barr[0];
     for (int i=0; i<g.nbullets; i++) {
