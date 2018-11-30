@@ -8,6 +8,12 @@
 using namespace std;
 
 
+/*void show_health(Gluint health){
+//show default health	
+    Image img = "./images/player/bottle_throw.png"
+    for (int i = 0; i<5; i++)
+
+}*/
 
 void show_AlexCredits(Rect *r)
 {
