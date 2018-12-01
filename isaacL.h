@@ -72,7 +72,7 @@ public:
 	GLuint title_tex;
 
 	// Variables
-	bool display = false;
+	bool display = true;
 	int opt[4] = { 1, 0, 0, 0 };
 	int opt_size = sizeof opt / sizeof *opt;
 
