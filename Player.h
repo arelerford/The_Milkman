@@ -11,11 +11,19 @@ class Player : public Entity {
         using Entity::Entity;
         
         void render (void);
+        void update (void);
+        void onCollision(Entity* e);
         
         void move (float nx, float ny)
         {
             x += nx;
             y += ny;
+        }
+
+        void jump (float force)
+        {
+            //TODO: add arc effect to the jump.
+            y += force;
         }
 };
 

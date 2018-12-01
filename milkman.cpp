@@ -411,7 +411,7 @@ Image img[4] = {
         }
 } player (100, 100, 75, 100);*/
 
-Player player ("Player", 100, 100, 75, 100, false);
+Player player ("Player", 5, 100, 100, 75, 100, false);
 
 /*class Enemy : public Entity {
     private:

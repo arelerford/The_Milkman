@@ -9,7 +9,8 @@ using namespace std;
 
 class Entity {
     public:
-        explicit Entity (string, float, float, float, float, bool);
+        explicit Entity (string, int, float, float, float, float, bool);
+        int health;
         string name;
         float x, y;
         float width, height;
@@ -18,9 +19,15 @@ class Entity {
         void update(void);
         bool checkCollision(Entity* e);
         float distance (Entity* e);
-        void onCollision(void);
+        void onCollision(Entity* e);
+        void takeDamage(int amount);
+        void move(float nx, float ny)
+        {
+            x = nx;
+            y = ny;
+        }
     protected:
-        void init (string, float, float, float, float, bool);
+        void init (string, int, float, float, float, float, bool);
     private:
         Entity();
 };
