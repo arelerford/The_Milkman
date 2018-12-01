@@ -122,17 +122,16 @@ class Level_1 {
 public:
 	const char *name = "level_1";
 	// Images
-	Image background_img[1] = {
-		"./images/level1/levback.png"
-		// "./images/level1/OOB.png"
-	};
-	int background_num = sizeof background_img / sizeof *background_img;
+	Image background_img = "./images/level1/levback.png";
+	Image foreground_img = "./images/level1/levfore.png";
 
 	// Textures
-	GLuint *background_tex;
+	GLuint background_tex;
+	GLuint foreground_tex;
 
 	// Variables
 	bool display = false;
+	int frame;
 
 	// Methods
 	Level_1();

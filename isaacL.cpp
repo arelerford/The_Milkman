@@ -383,19 +383,24 @@ int Credits::checkKey(int key)
 
 Level_1::Level_1()
 {
-    background_tex = new GLuint[background_num];
-
-    //Generate textures and bind images for team photos
-    for (int i = 0; i < background_num; i++) {
-        glGenTextures(1, &background_tex[i]);
-        glBindTexture(GL_TEXTURE_2D, background_tex[i]);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        unsigned char *new_img = buildAlphaCustom(&background_img[i], 50, 255, 0);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, background_img[i].width, background_img[i].height, 0,
-            GL_RGBA, GL_UNSIGNED_BYTE, new_img);
-        free(new_img);
-    }
+	frame = 0;
+	
+    //Generate textures
+	glGenTextures(1, &background_tex);
+	glBindTexture(GL_TEXTURE_2D, background_tex);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, background_img.width, background_img.height, 0,
+		GL_RGB, GL_UNSIGNED_BYTE, background_img.data);
+	
+	glGenTextures(1, &foreground_tex);
+	glBindTexture(GL_TEXTURE_2D, foreground_tex);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	unsigned char *new_img = buildAlphaData(&foreground_img);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, foreground_img.width, foreground_img.height, 0,
+		GL_RGBA, GL_UNSIGNED_BYTE, new_img);
+	free(new_img);
 };
 
 void Level_1::Display(Global *obj)
@@ -404,41 +409,38 @@ void Level_1::Display(Global *obj)
         //Clear the screen
         glClearColor(0, 0, 0, 0);
         glClear(GL_COLOR_BUFFER_BIT);
-
-        // showBackGround(background_tex, background_img[0].width, background_img[0].height, obj->xres, obj->yres);
-
-        static int count = 1;
-        static float moveX = 0;
-        float scrR = (float)obj->xres / obj->yres;
-        float imgR = (float)background_img[0].height / background_img[0].width;
-        float texR = scrR * imgR;
-
-        for (int i = 0; i < 1; i++) {
-            glColor3f(1.0f, 1.0f, 1.0f);
-            glPushMatrix();
-            glTranslatef(0, 0, 0);
-            glBindTexture(GL_TEXTURE_2D, background_tex[i]);
-            // glEnable(GL_ALPHA_TEST);
-            // glAlphaFunc(GL_GREATER, 0.0f);
-            glBegin(GL_QUADS);
-                glTexCoord2f(       moveX, 1);  glVertex2i (   0,    0);
-                glTexCoord2f(texR + moveX, 1);  glVertex2i (obj->xres,    0);
-                glTexCoord2f(texR + moveX, 0);  glVertex2i (obj->xres, obj->yres);
-                glTexCoord2f(       moveX, 0);  glVertex2i (   0, obj->yres);
-
-
-                // glTexCoord2f(0, 1);  glVertex2i (   0,    0);
-                // glTexCoord2f(1, 1);  glVertex2i (obj->xres,    0);
-                // glTexCoord2f(1, 0);  glVertex2i (obj->xres, obj->yres);
-                // glTexCoord2f(0, 0);  glVertex2i (   0, obj->yres);
-
-            glEnd();
-            glPopMatrix();
-            glBindTexture(GL_TEXTURE_2D, 0);
-            // glDisable(GL_ALPHA_TEST);
-        }
-        count++;
-        moveX += 0.001;
+		// Draws Background
+		glColor3f(1.0f, 1.0f, 1.0f);
+		glPushMatrix();
+		glTranslatef(0, 0, 0);
+		glBindTexture(GL_TEXTURE_2D, background_tex);
+		glBegin(GL_QUADS);
+			glTexCoord2f(0.2*frame      , 1);  glVertex2i(        0,         0);
+			glTexCoord2f(0.2*frame + 0.2, 1);  glVertex2i(obj->xres,         0);
+			glTexCoord2f(0.2*frame + 0.2, 0);  glVertex2i(obj->xres, obj->yres);
+			glTexCoord2f(0.2*frame      , 0);  glVertex2i(        0, obj->yres);
+		glEnd();
+		glPopMatrix();
+		glBindTexture(GL_TEXTURE_2D, 0);
+		
+		
+		
+		// Draws foreground
+		glColor3f(1.0f, 1.0f, 1.0f);
+		glPushMatrix();
+		glTranslatef(0, 0, 0);
+		glBindTexture(GL_TEXTURE_2D, foreground_tex);
+		glEnable(GL_ALPHA_TEST);
+		glAlphaFunc(GL_GREATER, 0.0f);
+		glBegin(GL_QUADS);
+			glTexCoord2f(0.2*frame      , 1);  glVertex2i(        0,         0);
+			glTexCoord2f(0.2*frame + 0.2, 1);  glVertex2i(obj->xres,         0);
+			glTexCoord2f(0.2*frame + 0.2, 0);  glVertex2i(obj->xres, obj->yres);
+			glTexCoord2f(0.2*frame      , 0);  glVertex2i(        0, obj->yres);
+		glEnd();
+		glPopMatrix();
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glDisable(GL_ALPHA_TEST);
     }
 };
 
