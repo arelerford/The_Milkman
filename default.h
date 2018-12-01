@@ -2,7 +2,16 @@
 #ifndef DEFAULT_H_
 #define DEFAULT_H_
 
-#include "log.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <time.h>
+#include <math.h>
+#include <X11/Xlib.h>
+#include <GL/glx.h>
+#include <ctime>
+#include "fonts.h"
 
 typedef double Vec[3];
 typedef double Flt;
@@ -74,7 +83,7 @@ public:
 	//camera is centered at (0,0) lower-left of screen. 
 	Flt camera[2];
 
-	~Global() { logClose(); }
+	~Global() {}
 	Global();
 };
 
