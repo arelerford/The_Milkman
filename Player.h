@@ -1,3 +1,8 @@
+// Author: Justin Selsor
+// For the Milkman Project.
+// This header file contains definitions for the player object in the game.
+// It is a child class of Entity.
+
 #ifndef PLAYER_H_
 #define PLAYER_H_
 

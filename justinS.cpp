@@ -18,6 +18,7 @@
 
 using namespace std;
 
+// ============================================================================
 Entity::Entity ()
 {
     init ("Blank Entity Constuctor Called", 0, 0, 0, 0, 0, true);
@@ -83,6 +84,7 @@ void Entity::onCollision(Entity* e)
     cout << "Apple\n";
     // TODO: NEED TO STOP THE MOVEMENT FOR BOUNCE BACK THE ENTITTY.
 }
+// ============================================================================
 
 void CollisonManager::add (Entity* e)
 {
@@ -131,6 +133,7 @@ Entity* CollisonManager::getEntity (int i)
 
     return NULL;
 }
+// ============================================================================
 
 void Player::render () 
 {
@@ -153,6 +156,7 @@ void Player::update ()
 {
     y -= 0.5;
 }
+// ============================================================================
 
 void Enemy::render ()
 {
@@ -170,7 +174,7 @@ void Enemy::onCollision (Entity* e)
 {
     Entity::onCollision (e);
 }
-
+// ===========================================================================-
 
 // Manageges Physics interactions
 void managerCollison ()
@@ -192,6 +196,9 @@ void managerCollison ()
                 //cout << "E2's Positon: (" << e2->x << ", " << e2->y << ")\n";
 
                 if (collison) {
+                    // TODO: modifie this so that:
+                    // 1) e1->Collision(e2) is the only collison call.
+                    // 2) Check if the entity is a static entity.
                     e1->onCollision(e2);
                     e2->onCollision(e1);           
                 }

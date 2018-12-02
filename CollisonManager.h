@@ -1,4 +1,7 @@
 // Author: Justin Selsor
+// This header containes definitions for the collsion managers.
+// The collsion manager handles all the collisons for the game.
+// It is implments the singleton pattern.
 
 #ifndef COLLISONMANAGER_H_
 #define COLLISIONMANGER_H_

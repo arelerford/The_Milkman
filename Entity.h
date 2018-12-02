@@ -1,5 +1,8 @@
 // Author: Justin Selsor (Nov. 14 2018)
 // For the Milkman Projects. Software Enginering.
+// 
+// This is a header file for entity objects of the game.
+
 #ifndef ENTITIY_H_
 #define ENTITIY_H_
 
@@ -20,7 +23,10 @@ class Entity {
         bool checkCollision(Entity* e);
         float distance (Entity* e);
         void onCollision(Entity* e);
-        void takeDamage(int amount);
+        void takeDamage(int amount)
+        {
+            health -= amount;
+        }
         void move(float nx, float ny)
         {
             x = nx;
