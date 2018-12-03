@@ -12,6 +12,41 @@ using namespace std;
 
 
 extern Global gl;
+
+void showcontrol_ops(int x, int y, GLuint controls_tex)
+{
+	 Image controls_img = "./images/controls/arrows.png";
+     //Generate options texture
+    // for (int i = 0; i<1; i++){
+
+         glGenTextures(1, &controls_tex);
+        glBindTexture(GL_TEXTURE_2D, controls_tex);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        unsigned char *new_img = buildAlphaData(&controls_img);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, controls_img.width, controls_img.height, 0,
+            GL_RGBA, GL_UNSIGNED_BYTE, new_img);
+        free(new_img);
+     
+
+     //draw controls tex
+    int wid = 50;
+    glColor3f (1.0f, 1.0f, 1.0f);
+    glPushMatrix();
+    glTranslatef(x, y, 0);
+    glBindTexture(GL_TEXTURE_2D, controls_tex);
+
+    glBegin(GL_QUADS);
+        glTexCoord2f(0.0f, 1.0f); glVertex2i (-wid, -wid);
+        glTexCoord2f(1.0f, 1.0f); glVertex2i (wid, -wid);
+        glTexCoord2f(1.0f, 0.0f); glVertex2i (wid, wid);
+        glTexCoord2f(0.0f, 0.0f); glVertex2i (-wid, wid);
+    glEnd();
+
+    glPopMatrix();
+    glBindTexture(GL_TEXTURE_2D, 0);
+    // }
+}
 /*void gen_health(GLuint health_tex, Image health_img)
 {
 

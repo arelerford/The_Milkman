@@ -493,15 +493,36 @@ int Level_1::checkKey(int key)
 ///alex's code will move later///
 Controls::Controls()
 {
+     cloud_tex = new GLuint[cloud_num];
 
+    // Generate textures and bind images for clouds
+    for (int i = 0; i < cloud_num; i++) {
+        glGenTextures(1, &cloud_tex[i]);
+        glBindTexture(GL_TEXTURE_2D, cloud_tex[i]);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        unsigned char *new_img = buildAlphaData(&cloud_img[i]);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, cloud_img[i].width, cloud_img[i].height, 0,
+            GL_RGBA, GL_UNSIGNED_BYTE, new_img);
+        free(new_img);
+    }
+	
 }
-void Controls::Display()
+void Controls::Display(Global *obj)
 {
     if (display) {
         //Clear the screen
-        glClearColor(1, 1, 1, 1);
+	float red =  78.0 / 255;
+        float green = 173.0 / 255;
+        float  blue = 245.0 / 255;
+        glClearColor(red, green, blue, 1);
         glClear(GL_COLOR_BUFFER_BIT);
-
+        showClouds(cloud_tex, cloud_num, obj->xres, obj->yres);
+       // glClearColor(1, 1, 1, 1);
+       // glClear(GL_COLOR_BUFFER_BIT);
+	extern void showcontrol_ops(int, int, GLuint);
+        // for(int i = 1; i <6; i++)
+            showcontrol_ops(100, 400, controls_tex);		
     }
 };
 

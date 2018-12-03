@@ -94,7 +94,7 @@ public:
 
 	// Textures
 	GLuint *team_tex;
-
+	GLuint *cloud_tex;
 	// Variables
 	bool display = false;
 
@@ -108,19 +108,38 @@ class Controls{
 public:
         const char *name = "controls";
 	
+	 Image cloud_img[8] = {
+    "./images/startmenu/cloud1.jpg",
+    "./images/startmenu/cloud2.jpg",
+    "./images/startmenu/cloud3.jpg",
+    "./images/startmenu/cloud4.jpg",
+    "./images/startmenu/cloud5.jpg",
+    "./images/startmenu/cloud6.jpg",
+    "./images/startmenu/cloud7.jpg",
+    "./images/startmenu/cloud8.jpg"
+        };
 
+	//Controls Images
+	Image controls_img = "./images/controls/arrows.png";
+
+	int cloud_num = sizeof cloud_img / sizeof *(cloud_img);
         //variables
         bool display = false;
 
+	//textures
+	GLuint controls_tex;
+	GLuint *cloud_tex;
         //Methods
         Controls();
-        void Display();
+        void Display(Global*);
         int checkKey(int);
 };
 //////
 class Level_1 {
 public:
 	const char *name = "level_1";
+
+
 	// Images
 	Image background_img = "./images/level1/levback.png";
 	Image foreground_img = "./images/level1/levfore.png";
@@ -129,7 +148,7 @@ public:
 	// Textures
 	GLuint background_tex;
 	GLuint foreground_tex;
-    GLuint health_tex;
+  	GLuint health_tex;
 
 	// Variables
 	bool display = false;
