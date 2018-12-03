@@ -26,7 +26,7 @@ public:
     printf("%u\n",texid );
     
     }   
-    }
+    
 };
 
 class Game {

@@ -938,7 +938,22 @@ void render(void)
     Bullet *b = &g.barr[0];
     for (int i=0; i<g.nbullets; i++) {
         glColor3f(1.0, 1.0, 1.0);
-        glBegin(GL_POINTS);
+            glPushMatrix();
+    	glTranslatef(b->pos[0], b->pos[1], 0);
+    	glBindTexture(GL_TEXTURE_2D,b->texid);
+    	glEnable(GL_ALPHA_TEST);
+    	glAlphaFunc(GL_GREATER, 0.0f);
+    	glBegin(GL_QUADS);
+       	glTexCoord2f(0.0f, 1.0f); glVertex2i (   0,    0);
+           glTexCoord2f(1.0f, 1.0f); glVertex2i (150,    0);
+           glTexCoord2f(1.0f, 0.0f); glVertex2i (150, 150);
+           glTexCoord2f(0.0f, 0.0f); glVertex2i (   0, 150);
+        glEnd();
+    	glPopMatrix();
+        glBindTexture(GL_TEXTURE_2D,0);
+    	glDisable(GL_ALPHA_TEST); 
+    /*    
+		glBegin(GL_POINTS);
             glVertex2f(b->pos[0],      b->pos[1]);
             glVertex2f(b->pos[0]-1.0f, b->pos[1]);
             glVertex2f(b->pos[0]+1.0f, b->pos[1]);
@@ -949,7 +964,7 @@ void render(void)
             glVertex2f(b->pos[0]-1.0f, b->pos[1]+1.0f);
             glVertex2f(b->pos[0]+1.0f, b->pos[1]-1.0f);
             glVertex2f(b->pos[0]+1.0f, b->pos[1]+1.0f);
-        glEnd();
+        glEnd();*/
         ++b;
     }	
 
