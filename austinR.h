@@ -34,17 +34,18 @@ public:
     Bullet *barr;
     int nbullets;
     struct timespec bulletTimer;
-public:
+/*public:
    Game() {
         barr = new Bullet[MAX_BULLETS];
 	nbullets = 0;
 	clock_gettime(CLOCK_REALTIME, &bulletTimer);
-   } 
+   } */
+    Game();
    ~Game() {
        delete [] barr;
    }
 	
-} g;
+};
 
 
 
