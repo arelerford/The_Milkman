@@ -941,7 +941,7 @@ void render(void)
 	screen.start->Display(&gl);
 	screen.credits->Display(&gl);
 	screen.level_1->Display(&gl);
-    	screen.controls->Display();
+    	screen.controls->Display(&gl);
 
     Bullet *b = &g.barr[0];
     for (int i=0; i<g.nbullets; i++) {
