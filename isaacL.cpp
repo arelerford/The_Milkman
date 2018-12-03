@@ -403,7 +403,7 @@ Level_1::Level_1()
 	free(new_img);
 
 	 //Generate health texture
-     for (int i = 0; i<5; i++){
+    /* for (int i = 0; i<5; i++){
 
          glGenTextures(1, &health_tex);
         glBindTexture(GL_TEXTURE_2D, health_tex);
@@ -413,7 +413,9 @@ Level_1::Level_1()
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, health_img.width, health_img.height, 0,
             GL_RGBA, GL_UNSIGNED_BYTE, new_img);
         free(new_img);
-     }
+     }*/
+//	extern void gen_health(GLuint, Img);
+//	gen_health(health_tex, health_img);
 
 };
 

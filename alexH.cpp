@@ -12,11 +12,42 @@ using namespace std;
 
 
 extern Global gl;
+/*void gen_health(GLuint health_tex, Image health_img)
+{
+
+    Image health_img = "./images/player/milk_health.png";
+         //Generate health texture
+     for (int i = 0; i<5; i++){
+
+         glGenTextures(1, &health_tex);
+        glBindTexture(GL_TEXTURE_2D, health_tex);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        unsigned char *new_img = buildAlphaData(&health_img);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, health_img.width, health_img.height, 0,
+            GL_RGBA, GL_UNSIGNED_BYTE, new_img);
+        free(new_img);
+     }
+
+}*/
 void show_health(int x, int y, GLuint health_tex){
 //show default health
 //5 hit points
     Image health_img = "./images/player/milk_health.png";
-
+     //Generate health texture
+     for (int i = 0; i<5; i++){
+	
+         glGenTextures(1, &health_tex);
+        glBindTexture(GL_TEXTURE_2D, health_tex);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        unsigned char *new_img = buildAlphaData(&health_img);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, health_img.width, health_img.height, 0,
+            GL_RGBA, GL_UNSIGNED_BYTE, new_img);
+        free(new_img);
+     }
+	
+	
          int wid = 20;
        glColor3f (1.0f, 1.0f, 1.0f);
             glPushMatrix();
