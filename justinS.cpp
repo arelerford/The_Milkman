@@ -18,7 +18,7 @@
 
 using namespace std;
 
-// ============================================================================
+// ========================================================================
 Entity::Entity ()
 {
     init ("Blank Entity Constuctor Called", 0, 0, 0, 0, 0, true);
@@ -44,14 +44,32 @@ void Entity::init (string _name, int _health, float _x, float _y, float _width, 
 
 void Entity::render (void) 
 {
-    glColor3f (1.0f, 1.0f, 1.0f);
+    if (!showImage) {
+        glColor3f (1.0f, 1.0f, 1.0f);
+    
+        glBegin(GL_QUADS);
+            glTexCoord2f(0, 0); glVertex2f(x, y);
+        	glTexCoord2f(0, 1); glVertex2f(x, y + height);
+	    	glTexCoord2f(1, 1); glVertex2f(x + width, y + height);
+        	glTexCoord2f(1, 0); glVertex2f(x + width, y);
+	    glEnd();
+    } else {
+        glColor3f(1.0f, 1.0f, 1.0f);
 
-    glBegin(GL_QUADS);
-        glTexCoord2f(0, 0); glVertex2f(x, y);
-    	glTexCoord2f(0, 1); glVertex2f(x, y + height);
-		glTexCoord2f(1, 1); glVertex2f(x + width, y + height);
-    	glTexCoord2f(1, 0); glVertex2f(x + width, y);
-	glEnd();
+        glPushMatrix();
+        glTranslatef(x, y, 0);
+
+        glBindTexture(GL_TEXTURE_2D, texture);
+
+        glBegin(GL_QUADS);
+            glTexCoord2f(0, 0); glVertex2f(x, y);
+        	glTexCoord2f(0, 1); glVertex2f(x, y + height);
+	    	glTexCoord2f(1, 1); glVertex2f(x + width, y + height);
+        	glTexCoord2f(1, 0); glVertex2f(x + width, y);
+	    glEnd();
+
+        glPopMatrix();
+    }
 }
 
 void Entity::update (void) 
@@ -137,14 +155,34 @@ Entity* CollisonManager::getEntity (int i)
 
 void Player::render () 
 {
-    glColor3f (0.0f, 1.0f, 0.0f);
+    if (!showImage) {
+        glColor3f (0.0f, 1.0f, 0.0f);
 
-    glBegin(GL_QUADS);
-        glTexCoord2f(0, 0); glVertex2f(x, y);
-    	glTexCoord2f(0, 1); glVertex2f(x, y + height);
-		glTexCoord2f(1, 1); glVertex2f(x + width, y + height);
-    	glTexCoord2f(1, 0); glVertex2f(x + width, y);
-	glEnd();
+        glBegin(GL_QUADS);
+            glTexCoord2f(0, 0); glVertex2f(x, y);
+    	    glTexCoord2f(0, 1); glVertex2f(x, y + height);
+		    glTexCoord2f(1, 1); glVertex2f(x + width, y + height);
+    	    glTexCoord2f(1, 0); glVertex2f(x + width, y);
+	    glEnd();
+    } else {
+        glColor3f(1.0f, 1.0f, 1.0f);
+
+        glPushMatrix();
+        glTranslatef(x, y, 0);
+
+        glBindTexture(GL_TEXTURE_2D, texture);
+
+        glBegin(GL_QUADS);
+            glTexCoord2f(0, 0); glVertex2f(x, y);
+        	glTexCoord2f(0, 1); glVertex2f(x, y + height);
+	    	glTexCoord2f(1, 1); glVertex2f(x + width, y + height);
+        	glTexCoord2f(1, 0); glVertex2f(x + width, y);
+	    glEnd();
+
+        glPopMatrix();
+
+        //glBindTexture(GL_TEXTURE_2D, 0);
+    }
 }
 
 void Player::onCollision (Entity* e)

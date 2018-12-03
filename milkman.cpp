@@ -644,6 +644,8 @@ void init() {
         gl.button[gl.nbuttons].text_color = 0x00ffffff;
         gl.nbuttons++;
 
+        player.loadImage("./images/player/stand_right.png");
+        player.showImage = true;
 }
 
 int checkMouse(XEvent *e)
