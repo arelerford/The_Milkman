@@ -5,15 +5,37 @@
 #include "fonts.h"
 #include <GL/glx.h>
 #include <math.h>
+#include "default.h"
+#include "isaacL.h"
+
 using namespace std;
 
 
-/*void show_health(Gluint health){
-//show default health	
-    Image img = "./images/player/bottle_throw.png"
-    for (int i = 0; i<5; i++)
+extern Global gl;
+void show_health(int x, int y, GLuint health_tex){
+//show default health
+//5 hit points
+    Image health_img = "./images/player/milk_health.png";
 
-}*/
+         int wid = 20;
+       glColor3f (1.0f, 1.0f, 1.0f);
+            glPushMatrix();
+    glTranslatef(x, y, 0);
+    glBindTexture(GL_TEXTURE_2D, health_tex);
+
+    glBegin(GL_QUADS);
+        glTexCoord2f(0.0f, 1.0f); glVertex2i (-wid, -wid);
+        glTexCoord2f(1.0f, 1.0f); glVertex2i (wid, -wid);
+        glTexCoord2f(1.0f, 0.0f); glVertex2i (wid, wid);
+        glTexCoord2f(0.0f, 0.0f); glVertex2i (-wid, wid);
+    glEnd();
+
+    glPopMatrix();
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+}
+
+
 
 void show_AlexCredits(Rect *r)
 {

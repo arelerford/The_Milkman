@@ -124,10 +124,12 @@ public:
 	// Images
 	Image background_img = "./images/level1/levback.png";
 	Image foreground_img = "./images/level1/levfore.png";
+	Image health_img = "./images/player/milk_health.png";
 
 	// Textures
 	GLuint background_tex;
 	GLuint foreground_tex;
+    GLuint health_tex;
 
 	// Variables
 	bool display = false;

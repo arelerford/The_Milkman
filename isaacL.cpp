@@ -401,6 +401,20 @@ Level_1::Level_1()
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, foreground_img.width, foreground_img.height, 0,
 		GL_RGBA, GL_UNSIGNED_BYTE, new_img);
 	free(new_img);
+
+	 //Generate health texture
+     for (int i = 0; i<5; i++){
+
+         glGenTextures(1, &health_tex);
+        glBindTexture(GL_TEXTURE_2D, health_tex);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        unsigned char *new_img = buildAlphaData(&health_img);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, health_img.width, health_img.height, 0,
+            GL_RGBA, GL_UNSIGNED_BYTE, new_img);
+        free(new_img);
+     }
+
 };
 
 void Level_1::Display(Global *obj)
@@ -423,8 +437,17 @@ void Level_1::Display(Global *obj)
 		glPopMatrix();
 		glBindTexture(GL_TEXTURE_2D, 0);
 		
-		
-		
+		 // Draws Health (Milk Bottles)  -- Alex
+         extern void show_health(int, int, GLuint);
+         for(int i = 1; i <6; i++)
+            show_health((50*i - 30), 570, health_tex);
+        /* show_health(20 , 550, health_tex);
+         show_health(70 , 550, health_tex);
+         show_health(120 , 550, health_tex);
+         show_health(170 , 550, health_tex);
+         show_health(220 , 550, health_tex);*/
+        /////////////
+				
 		// Draws foreground
 		glColor3f(1.0f, 1.0f, 1.0f);
 		glPushMatrix();
