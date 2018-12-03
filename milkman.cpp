@@ -456,6 +456,14 @@ Player player ("Player", 5, 100, 100, 75, 100, false);
         }
 };*/
 
+Game::Game() {
+	barr = new Bullet[MAX_BULLETS];
+	nbullets = 0;
+	clock_gettime(CLOCK_REALTIME, &bulletTimer);
+
+};
+Game g;
+
 class Camera {
     
 } mainCamera;
