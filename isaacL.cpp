@@ -407,13 +407,13 @@ void Controls::Display()
 
         showcontrol_ops(200, 400, controls_tex[1]);		
         showcontrol_ops(200, 200, controls_tex[0]);
-        Rect r;
+    /*    Rect r;
         r.left = gl.xres /  3;
         r.bot  = gl.yres - 60;
        // int pic_column = 2 * r.left;
 
         extern void showopstext(Rect *);
-        showopstext(&r);
+        showopstext(&r);*/
     }
 };
 
@@ -484,8 +484,11 @@ Credits::Credits()
 void Credits::Display()
 {
     if (display) {
-        //Clear the screen
-        glClearColor(1, 1, 1, 1);
+        //Clear the screen to light blue
+		 float red =  78.0 / 255;
+        float green = 173.0 / 255;
+        float  blue = 245.0 / 255;
+        glClearColor(red, green, blue, 1);
         glClear(GL_COLOR_BUFFER_BIT);
 
         // External Files
