@@ -357,6 +357,14 @@ int checkKeys(XEvent *e)
 		return 0;
 	}
 	(void)shift;
+	
+	if (key == XK_BackSpace) {
+		screen.start->display = true;
+		screen.controls->display = false;
+		screen.credits->display = false;
+		screen.level_1->display = false;
+		screen.level_2->display = false;
+	}
 
 	if (screen.start->display) {
 		return screen.start->checkKey(key);
