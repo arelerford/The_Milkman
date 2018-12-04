@@ -1,191 +1,345 @@
 
-
 #ifndef ISAACL_H_
 #define ISAACL_H_
 
+#include  <GL/glx.h>
+#include   <stdio.h>
+#include  <stdlib.h>
+#include    <math.h>
+#include   "fonts.h"
 #include "default.h"
-#include "Player.h"
 
-#define NUM_CLOUDS 15
+#define  NUM_CLOUDS 15
 #define SIZE_CLOUDS 175
+#define NUM_BOTTLES 20
 
-using namespace std;
+extern Global gl;
 
 class Cloud {
-	int xpos, ypos;
-	int dx = rand() % 3 + 2;
-	int dy = 1;
-	int size = SIZE_CLOUDS;
-	bool init = true;
+	int    xpos, ypos;
+	int    dx, dy;
+	int    size;
+	bool   init;
 	GLuint texid;
 
 public:
-	Cloud() {}
+	Cloud();
 	void draw();
 	void setAttr(GLuint, int, int);
 	void refreshX(GLuint, int);
 	void refreshY(GLuint, int);
 	void move();
-	int getX() {return xpos;}
-	int getY() {return ypos;}
+	int  getX() {return xpos;}
+	int  getY() {return ypos;}
 	bool needInit() {return init;}
 };
 
 class Text {
-	int xpos, ypos;
-	int width, height;
+	int    xpos, ypos;
+	int    width, height;
+	bool   active;
 	GLuint texid;
-	bool active = false;
 
 public:
 	Text ();
-	void setAttr(GLuint, int, int);
+	void setTex(GLuint);
 	void draw();
 	void setActive(bool);
-	void setLoc(int , int);
+	void setLoc(int, int);
 };
 
 class Start {
 public:
-	const char *name = "mainmenu";
 	// Images
 	Image title_img = "./images/startmenu/title.png";
+
 	Image cloud_img[8] = {
-    "./images/startmenu/cloud1.jpg",
-    "./images/startmenu/cloud2.jpg",
-    "./images/startmenu/cloud3.jpg",
-    "./images/startmenu/cloud4.jpg",
-    "./images/startmenu/cloud5.jpg",
-    "./images/startmenu/cloud6.jpg",
-    "./images/startmenu/cloud7.jpg",
-    "./images/startmenu/cloud8.jpg"
+		"./images/startmenu/cloud1.jpg",
+		"./images/startmenu/cloud2.jpg",
+		"./images/startmenu/cloud3.jpg",
+		"./images/startmenu/cloud4.jpg",
+		"./images/startmenu/cloud5.jpg",
+		"./images/startmenu/cloud6.jpg",
+		"./images/startmenu/cloud7.jpg",
+		"./images/startmenu/cloud8.jpg"
 	};
-	int cloud_num = sizeof cloud_img / sizeof *(cloud_img);
-	Image text_img[4] = {
-        "./images/startmenu/mainmenu.png",
-        "./images/startmenu/levels.png",
-        "./images/startmenu/credits.png",
-        "./images/startmenu/controls.png"
+	int cloud_num;
+
+	Image text_img[3] = {
+		"./images/startmenu/start.png",
+		"./images/startmenu/controls.png",
+		"./images/startmenu/credits.png"
 	};
-	int text_num = sizeof text_img / sizeof *(text_img);
+	int text_num;
+
+	// Object
+	Cloud *clouds;
+	Text  *text;
 
 	// Textures
 	GLuint *cloud_tex;
 	GLuint *text_tex;
-	GLuint title_tex;
+	GLuint  title_tex;
 
 	// Variables
-	bool display = true;
-	int opt[4] = { 1, 0, 0, 0 };
-	int opt_size = sizeof opt / sizeof *opt;
+	bool display;
+	bool restart;
+
+	// Menu Options
+	int *opt;
+	int  opt_size;
 
 	// Methods
 	Start();
-	void Display(Global*);
-	int checkKey(int);
+	void Display();
+	void initClouds();
+	void showClouds();
+	void initText();
+	void showText();
+	bool showTitle(bool);
+	int  checkKey(int);
 };
 
 class Credits {
 public:
-	const char *name = "credits";
 	//Images
 	Image team_img[2] = {
+		// Alex Pic
+
+		// Isaac Pic
 		"./images/credits/isaacL.jpg",
+		// Austin Pic
+
+		// Justin Pic
 		"./images/credits/justinS.jpg"
 	};
-	int team_num = sizeof team_img / sizeof *(team_img);
+	int team_num;
 
 	// Textures
 	GLuint *team_tex;
-	GLuint *cloud_tex;
+
 	// Variables
-	bool display = false;
+	bool display;
 
 	// Methods
 	Credits();
-	void Display(Global*);
-	int checkKey(int);
+	void Display();
+	int  checkKey(int);
 };
-////alex code///
-class Controls{
+
+class Bottle {
 public:
-        const char *name = "controls";
-	
-	 Image cloud_img[8] = {
-    "./images/startmenu/cloud1.jpg",
-    "./images/startmenu/cloud2.jpg",
-    "./images/startmenu/cloud3.jpg",
-    "./images/startmenu/cloud4.jpg",
-    "./images/startmenu/cloud5.jpg",
-    "./images/startmenu/cloud6.jpg",
-    "./images/startmenu/cloud7.jpg",
-    "./images/startmenu/cloud8.jpg"
-        };
+	// Images
+	Image bottle_img = "./images/player/bottle.png";
 
-	//Controls Images
-	Image controls_img = "./images/controls/arrows.png";
+	// Texture
+	GLuint bottle_tex;
 
-	int cloud_num = sizeof cloud_img / sizeof *(cloud_img);
-        //variables
-        bool display = false;
+	// Positions
+	int xpos, ypos;
+	int hitbox[4][2];
 
-	//textures
-	GLuint controls_tex;
-	GLuint *cloud_tex;
-        //Methods
-        Controls();
-        void Display(Global*);
-        int checkKey(int);
+	// Variables
+	int  size, step;
+	int   direction;
+	float ds, frame;
+	bool     active;
+
+	bool debug = false;
+
+	// Methods
+	Bottle();
+	void Display();
+	void drawHitBox();
+	void Attack(int, int, int);
+	void Shatter();
 };
-//////
+
+class Player {
+public:
+	// Image
+	Image player_img[4] = {
+		"./images/player/stand_right.png",
+		"./images/player/stand_left.png",
+		"./images/player/walk_right.png",
+		"./images/player/walk_left.png"
+	};
+	int player_num;
+
+	// Player Texture
+	GLuint *player_tex;
+
+	// Attack Weapon
+	Bottle *bottles;
+	int  timer;
+	int   time;
+	bool shoot;
+
+	// Positions
+	int xpos, ypos; 	// refers to bottom center of player
+	int size, step;		// player is (2*size) X (2*size)
+
+	// Display
+	bool display;
+	bool     fwd;
+	bool     bwd;
+	bool     mov;
+	int    frame;
+	int hitbox[4][2];
+
+	bool debug = false;
+
+	// Abilities
+	int  fireRate;		// gl.fps/fireRate = shots/second
+	int fireSpeed;
+
+	// Methods
+	Player();
+	void Display();
+	void drawHitBox();
+	void Attack(int);
+	void showAttack();
+};
+
+class Enemy {
+public:
+	// Image
+	Image enemy_img[8] = {
+		"./images/enemy/stand_right.png",		//0
+		"./images/enemy/stand_left.png",		//1
+		"./images/enemy/walk_right.png",		//2
+		"./images/enemy/walk_left.png",			//3
+		"./images/enemy/stand_up_right.png",	//4
+		"./images/enemy/stand_up_left.png",		//5
+		"./images/enemy/die_right.png",			//6
+		"./images/enemy/die_left.png",			//7
+		// "./images/enemy/attack_right.png",		//8
+		// "./images/enemy/attack_left.png"		//9
+	};
+	int enemy_num;
+
+	// Player Texture
+	GLuint *enemy_tex;
+
+	// Positions
+	int xpos, ypos;
+	int size, step;	//Enemy is 2*size tall and wide
+	int  rand_diff;
+	int  health;
+	int  frame;
+
+	// Display
+	bool  near;
+	bool stood;
+	bool alive;
+	int  slice;
+	int hitbox[4][2];
+
+	bool debug = false;
+
+	bool fwd;
+	bool bwd;
+	bool mov;
+
+	// Methods
+	Enemy();
+	void Display();
+	void drawHitBox();
+	void sitDraw();
+	void standDraw();
+	void moveDraw();
+	void standupDraw();
+	void sitdownDraw();
+	void setLoc(int, int, int);
+	void Move(int, int, int);
+	void Attack();
+	void Die();
+};
+
 class Level_1 {
 public:
-	const char *name = "level_1";
-
-
 	// Images
 	Image background_img = "./images/level1/levback.png";
 	Image foreground_img = "./images/level1/levfore.png";
-	Image health_img = "./images/player/milk_health.png";
 
 	// Textures
 	GLuint background_tex;
 	GLuint foreground_tex;
-  	GLuint health_tex;
 
 	// Variables
-	bool display = false;
-	int frame;
-    //Player player("Player", 5, 100, 100, 75, 100, false);
-    //Player player("Player", 5, 100, 100, 75, 100, false);
+	bool    display;
+	int enemies_num;
+	int       frame;
+
+	// Player Object
+	Player *player;
+	Enemy *enemies;
 
 	// Methods
-	Level_1();
-	void Display(Global*);
+	Level_1(Player*);
+	void Display();
+	void checkMove();
+	void refreshBottles();
+	void checkHit();
+	int  checkKey(int);
+};
+
+class Level_2 {
+public:
+	// Images
+	Image background_img = "./images/level2/levback.png";
+	Image foreground_img = "./images/level2/levfore.png";
+
+	// Textures
+	GLuint background_tex;
+	GLuint foreground_tex;
+
+	// Variables
+	bool display;
+	int enemies_num;
+	int frame;
+
+	// Object
+	Player *player;
+	Enemy *enemies;
+
+	// Methods
+	Level_2(Player*);
+	void Display();
+	void checkMove();
+	void refreshBottles();
+	void checkHit();
 	int checkKey(int);
 };
 
 // Add Render Screens Here
-typedef struct Screens {
+struct Screens {
 	Start *start;
 	Level_1 *level_1;
+	Level_2 *level_2;
 	Credits *credits;
-    Controls *controls;
-	bool *displays[4];
+	Player *player;
+	bool *displays[3];
 	Screens() 
 	{
-		start   = new Start;
-		level_1 = new Level_1;
-		credits = new Credits;
-        controls = new Controls;
+		printf("FILE: %s\tLINE: %d\n", __FILE__, __LINE__);
+		start   = new Start();
+		printf("FILE: %s\tLINE: %d\n", __FILE__, __LINE__);
+		player  = new Player();
+		printf("FILE: %s\tLINE: %d\n", __FILE__, __LINE__);
+		level_1 = new Level_1(player);
+		printf("FILE: %s\tLINE: %d\n", __FILE__, __LINE__);
+		level_2 = new Level_2(player);
+		printf("FILE: %s\tLINE: %d\n", __FILE__, __LINE__);
+		credits = new Credits();
+		printf("FILE: %s\tLINE: %d\n", __FILE__, __LINE__);
 
-		displays[0] = &start->display;
-		displays[1] = &level_1->display;
+		displays[0] = &level_1->display;
+		displays[1] = &start->display;
 		displays[2] = &credits->display;
-        displays[3] = &controls->display;
 	}
-} Screens;
+};
 
-void testFunct(Screens, int*, int);
+void menuSelect(Screens, int*, int);
 
 #endif

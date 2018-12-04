@@ -9,23 +9,16 @@
 #include <time.h>
 #include <math.h>
 #include <X11/Xlib.h>
+#include <X11/keysym.h>
 #include <GL/glx.h>
 #include <ctime>
-#include "fonts.h"
+#include "log.h"
 
-typedef double Vec[3];
-typedef double Flt;
-typedef struct t_button {
-	Rect r;
-	char text[32];
-	int over;
-	int down;
-	int click;
-	float color[3];
-	float dcolor[3];
-	unsigned int text_color;
-} Button;
-
+//function prototypes
+void initOpengl();
+void physics();
+void render();
+int checkKeys(XEvent *e);
 
 class Timers {
 public:
@@ -50,53 +43,14 @@ public:
 	void init(const char*);
 };
 
-class Sprite {
-public:
-	int onoff, frame;
-	double delay;
-	Vec pos;
-	GLuint tex;
-	Image *image;
-	struct timespec time;
-	
-	Sprite(); 
-};
-
 class Global {
 public:
-	Button button[4];
-	int nbuttons;
 	unsigned char keys[65536];
 	int xres, yres;
-	int movie, movieStep;
-	int walk;
-	int walkFrame;
-	double delay;
-	Image *walkImage;
-	GLuint walkTexture;
-	Vec box[20];
-	Sprite exp;
-	Sprite exp44;
-	Sprite bottleThrow;
-	Vec ball_pos;
-	Vec ball_vel;
-	//camera is centered at (0,0) lower-left of screen. 
-	Flt camera[2];
+	double fps;
 
-	~Global() {}
+	~Global() { logClose(); }
 	Global();
-};
-
-class Level {
-public:
-	unsigned char arr[16][80];
-	int nrows, ncols;
-	int tilesize[2];
-	Flt ftsz[2];
-	Flt tile_base;
-
-	Level();
-	void removeCrLf(char*);
 };
 
 class X11_wrapper {
