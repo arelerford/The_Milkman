@@ -11,6 +11,7 @@
 #include "Player.h"
 #include <string>
 
+extern void render_bullets();
 extern void shoot();
 extern Screens screen;
 
@@ -476,6 +477,7 @@ void Level_1::Display(Global *obj)
 		glDisable(GL_ALPHA_TEST);
 
         player.render();
+	render_bullets();
     }
 };
 

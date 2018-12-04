@@ -840,7 +840,7 @@ void render(void)
     screen.controls->Display(&gl);
 
 	//player.render();
-
+/*
     Bullet *b = &g.barr[0];
     for (int i=0; i<g.nbullets; i++) {
         glColor3f(1.0, 1.0, 1.0);
@@ -858,7 +858,7 @@ void render(void)
     	glPopMatrix();
         glBindTexture(GL_TEXTURE_2D,0);
     	glDisable(GL_ALPHA_TEST); 
-    /*    
+        
 		glBegin(GL_POINTS);
             glVertex2f(b->pos[0],      b->pos[1]);
             glVertex2f(b->pos[0]-1.0f, b->pos[1]);
@@ -870,9 +870,9 @@ void render(void)
             glVertex2f(b->pos[0]-1.0f, b->pos[1]+1.0f);
             glVertex2f(b->pos[0]+1.0f, b->pos[1]-1.0f);
             glVertex2f(b->pos[0]+1.0f, b->pos[1]+1.0f);
-        glEnd();*/
+        glEnd();
         ++b;
-    }	
+    }*/	
 
 }
 
