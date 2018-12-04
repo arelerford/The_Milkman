@@ -122,7 +122,7 @@ void show_AlexPicture(int x, int y, GLuint texid)
 	//fx += sin(angle) * 10.0f;
 	angle += 0.2f;	
         glColor3ub(255, 255, 255);
-        int wid=40;
+        int wid=60;
         glPushMatrix();
         glTranslatef(x + (int)(fx*20.0), y, 0);
 	glRotatef(angle2, 0.0f, 0.0f, 1.0f);

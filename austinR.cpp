@@ -23,7 +23,7 @@ void show_austin_pic (int x, int y, GLuint textid)
 {
     glColor3f (1.0f, 1.0f, 1.0f);
 
-    int wid = 40;
+    int wid = 60;
 
     glPushMatrix();
 

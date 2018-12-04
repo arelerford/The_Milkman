@@ -14,7 +14,7 @@ void show_isaac_name(Rect *r)
 
 void show_isaac_pic(int x, int y, GLuint texid)
 {
-    int wid = 40;
+    int wid = 60;
     glColor3f(1.0f, 1.0f, 1.0f);
     glPushMatrix();
     glTranslatef(x, y, 0);
@@ -509,7 +509,7 @@ void Credits::Display()
 
         show_AlexPicture(pic_column, r.bot + 10, team_tex[index]);
         show_AlexCredits(&r);
-        // index++;
+        index++;
 
         show_isaac_pic(pic_column, r.bot + 10, team_tex[index]);    
         show_isaac_name(&r);
@@ -517,7 +517,7 @@ void Credits::Display()
 
         show_austin_pic(pic_column, r.bot + 10, team_tex[index]);
         show_austin(&r);
-        // index++;
+        index++;
 
         show_justin_image(pic_column, r.bot + 10, team_tex[index]);
         show_credits_justin(&r);

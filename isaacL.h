@@ -10,7 +10,7 @@
 #include "default.h"
 
 #define  NUM_CLOUDS 15
-#define SIZE_CLOUDS 175
+#define SIZE_CLOUDS 300
 #define NUM_BOTTLES 20
 
 extern Global gl;
@@ -103,13 +103,13 @@ public:
 class Credits {
 public:
 	//Images
-	Image team_img[2] = {
+	Image team_img[4] = {
 		// Alex Pic
-
+		"./images/credits/alex.jpg",
 		// Isaac Pic
 		"./images/credits/isaacL.jpg",
 		// Austin Pic
-
+		"./images/credits/austin.jpg",
 		// Justin Pic
 		"./images/credits/justinS.jpg"
 	};
