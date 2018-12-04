@@ -11,6 +11,7 @@
 #include "Player.h"
 #include <string>
 
+extern void shoot();
 extern Screens screen;
 
 Player player ("Player", 5, 100, 100, 75, 100, false);
@@ -305,7 +306,7 @@ int Start::checkKey(int key)
             }
         break;
 
-        case XK_Return:
+	case XK_Return:
             testFunct(screen, opt, opt_size);
         break;
 
@@ -487,7 +488,9 @@ int Level_1::checkKey(int key)
             testFunct(screen, tmp, 4);
         }
         break;
-
+	case XK_d:
+	    shoot();
+	    break;
         case XK_Left:
             if (player.sflip == false)
                 player.flip();

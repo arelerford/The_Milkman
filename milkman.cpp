@@ -652,7 +652,7 @@ int checkKeys(XEvent *e)
 	}
 	(void)shift;
 	
-	if (key == XK_d) {
+/*	if (key == XK_d) {
 	    struct timespec bt;
 	    clock_gettime(CLOCK_REALTIME, &bt);
 	    double ts = timers.timeDiff(&g.bulletTimer, &bt);
@@ -673,7 +673,7 @@ int checkKeys(XEvent *e)
 		}
 
 	    }
-	}
+	} */
 
 	if (screen.start->display)	      return screen.start->checkKey(key);
 	else if (screen.credits->display) return screen.credits->checkKey(key);
