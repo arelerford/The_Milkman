@@ -318,83 +318,7 @@ void Image::init(const char *fname)
 };
 Image img = "./images/player/bottle_throw.png";
 
-//-----------------------------------------------------------------------------
-/*class Entity {
-    public:
-        float x, y;
-        float width, height;
-        bool isStatic;
-        
-        virtual void render () {
-
-        }
-
-        virtual void update () {
-
-        }
-
-        virtual bool checkCollison () {
-            return false;
-        }
-};*/
-
-/*class Player : public Entity {
-    public:
-        Player () 
-        {
-            CollisonManager::getInstance().add(this);
-        }
-
-        Player(float _xpos, float _ypos, float _width, float _height) 
-        {
-            x = _xpos;
-            y = _ypos;
-            width = _width;
-            height = _height;
-            isStatic = false;
-            CollisonManager::getInstance().add(this);
-        }
-
-        void move (float nx, float ny) 
-        {
-            x += nx;
-            y += ny;        
-        }
-
-        virtual void render() 
-        {
-            glColor3f (0.0f, 1.0f, 0.0f);
-
-            glBegin(GL_QUADS);
-			    glTexCoord2f(0, 0); 
-                    glVertex2f(x, y);
-    			glTexCoord2f(0, 1); 
-                    glVertex2f(x, y + height);
-			    glTexCoord2f(1, 1); 
-                    glVertex2f(x + width, y + height);
-    			glTexCoord2f(1, 0); 
-                    glVertex2f(x + width, y);
-		    glEnd();
-        }
-
-        virtual void update() 
-        {
-
-        }
-
-        void SpawnPlayer (float nx, float ny) 
-        {
-            x = nx;
-            y = ny;
-        }
-
-        virtual bool checkCollison () 
-        {
-            return false;
-        }
-} player (100, 100, 75, 100);*/
-
-Player player ("Player", 5, 100, 100, 75, 100, false);
+//Player player ("Player", 5, 100, 100, 75, 100, false);
 
 /*class Enemy : public Entity {
     private:
@@ -463,10 +387,6 @@ Game::Game() {
 
 };
 Game g;
-
-class Camera {
-    
-} mainCamera;
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -644,8 +564,8 @@ void init() {
         gl.button[gl.nbuttons].text_color = 0x00ffffff;
         gl.nbuttons++;
 
-        player.loadImage("./images/player/stand_right.png");
-        player.showImage = true;
+        //player.loadImage("./images/player/stand_right.png");
+        //player.showImage = true;
 }
 
 int checkMouse(XEvent *e)
@@ -662,7 +582,7 @@ int checkMouse(XEvent *e)
 	 if (e->type == ButtonRelease)
                 return 0;
         if (e->type == ButtonPress) {
-                if (e->xbutton.button==1) {
+                if (e->xbutton.button==1){
                         //Left button is down
                         lbutton=1;
                 }
@@ -705,30 +625,6 @@ int checkMouse(XEvent *e)
                 }
 	    }
 	}	
-		/*for (i=0; i<gl.nbuttons; i++) {
-                gl.button[i].over=0;
-                if (x >= gl.button[i].r.left &&
-                        x <= gl.button[i].r.right &&
-                        y >= gl.button[i].r.bot &&
-                        y <= gl.button[i].r.top) {
-                        gl.button[i].over=1;
-                        if (gl.button[i].over) {
-                                if (lbutton) {
-                                        switch (i) {
-                                            case 0: 
-							printf("Credits was clicked!\n");
-           						credits.display = !credits.display;
-                                                        break; 
-                                             case 1:
-						    	printf("Credits was clicked!\n"); //to tell if it's working
-           						credits.display = !credits.display;
-							
-                                        }
-                                }
-                        }
-                }
-        }*/
-        
 		return 0;
 }
 
@@ -766,8 +662,8 @@ int checkKeys(XEvent *e)
 		if (g.nbullets < MAX_BULLETS) {
 		    Bullet *b = &g.barr[g.nbullets];
 		    timers.timeCopy(&b->time, &bt);
-		    b->pos[0] = player.x;
-		    b->pos[1] = player.y;
+		    //b->pos[0] = player.x;
+		    //b->pos[1] = player.y;
 		    b->vel[0] = 30;
 		    b->vel[1] = 0;
 		    b->color[0] = 1.0f;
@@ -810,7 +706,6 @@ void physics(void)
 	if (gl.walk || gl.keys[XK_Right] || gl.keys[XK_Left]) {
 		//man is walking...
 		//when time is up, advance the frame.
-        player.move (0.5f, 0.0f);
 		timers.recordTime(&timers.timeCurrent);
 		double timeSpan = timers.timeDiff(&timers.walkTime, &timers.timeCurrent);
 		if (timeSpan > gl.delay) {
@@ -938,12 +833,13 @@ void physics(void)
 
 void render(void)
 {
-	player.render();
 
 	screen.start->Display(&gl);
 	screen.credits->Display(&gl);
 	screen.level_1->Display(&gl);
-    	screen.controls->Display(&gl);
+    screen.controls->Display(&gl);
+
+	//player.render();
 
     Bullet *b = &g.barr[0];
     for (int i=0; i<g.nbullets; i++) {
@@ -1008,11 +904,9 @@ int defaultKeys(int key)
 			break;
 
 		case XK_Left:
-			
 			break;
 
 		case XK_Right:
-			
 			break;
 
 		case XK_Up:

@@ -7,12 +7,19 @@ class Enemy : public Entity {
     public:
         using Entity::Entity;
 
+        float patrolSpeed;
+        float patrolLength;
+
         void render(void);
         void onCollision(Entity* e);
 
-        void patrolSettings (float)
+        void patrolSettings (float _patrolSpeed, float _patrolLength)
         {
+            patrolSpeed = _patrolSpeed;
+            patrolLength = _patrolLength;
 
+            bound1 = patrolLength + x;
+            bound2 = patrolLength - x;
         }
 
         void move (float nx, float ny)
@@ -20,6 +27,8 @@ class Enemy : public Entity {
             x += nx;
             y += ny;
         }
+    private:
+        float bound1, bound2;
 };
 
 #endif

@@ -4,9 +4,12 @@
 #define ISAACL_H_
 
 #include "default.h"
+#include "Player.h"
 
 #define NUM_CLOUDS 15
 #define SIZE_CLOUDS 175
+
+using namespace std;
 
 class Cloud {
 	int xpos, ypos;
@@ -153,6 +156,8 @@ public:
 	// Variables
 	bool display = false;
 	int frame;
+    //Player player("Player", 5, 100, 100, 75, 100, false);
+    //Player player("Player", 5, 100, 100, 75, 100, false);
 
 	// Methods
 	Level_1();

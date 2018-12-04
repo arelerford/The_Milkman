@@ -59,7 +59,7 @@ void Entity::render (void)
         glPushMatrix();
         glTranslatef(x, y, 0);
 
-        glBindTexture(GL_TEXTURE_2D, texture);
+        //glBindTexture(GL_TEXTURE_2D, texture);
 
         glBegin(GL_QUADS);
             glTexCoord2f(0, 0); glVertex2f(x, y);
@@ -97,12 +97,16 @@ bool Entity::checkCollision (Entity* e)
     return collisonX && collisonY;
 }
 
+// This function is to be called when two entities collided.
+// It should push the entity that collided with the entity to the edge of
+// the entity. It also flags to the console collsion data.
 void Entity::onCollision(Entity* e)
 {
     cout << "Apple\n";
-    // TODO: NEED TO STOP THE MOVEMENT FOR BOUNCE BACK THE ENTITTY.
+    x = e->x + e->width;
+    y = e->y + e->height;
 }
-// ============================================================================
+// =========================================================================
 
 void CollisonManager::add (Entity* e)
 {
@@ -151,7 +155,7 @@ Entity* CollisonManager::getEntity (int i)
 
     return NULL;
 }
-// ============================================================================
+// =========================================================================
 
 void Player::render () 
 {
@@ -167,21 +171,31 @@ void Player::render ()
     } else {
         glColor3f(1.0f, 1.0f, 1.0f);
 
-        glPushMatrix();
-        glTranslatef(x, y, 0);
-
         glBindTexture(GL_TEXTURE_2D, texture);
 
-        glBegin(GL_QUADS);
-            glTexCoord2f(0, 0); glVertex2f(x, y);
-        	glTexCoord2f(0, 1); glVertex2f(x, y + height);
-	    	glTexCoord2f(1, 1); glVertex2f(x + width, y + height);
-        	glTexCoord2f(1, 0); glVertex2f(x + width, y);
-	    glEnd();
+        glPushMatrix();
+        glTranslatef(x, y, 0);
+        
+        // For flipping facing right is the default.
+        if (!sflip) {
+            glBegin(GL_QUADS);
+                glTexCoord2f(0, 0); glVertex2f(x, y);
+            	glTexCoord2f(0, 1); glVertex2f(x, y - height);
+	        	glTexCoord2f(-1, 1); glVertex2f(x - width, y - height);
+            	glTexCoord2f(-1, 0); glVertex2f(x - width, y);
+	        glEnd();
+        } else {
+            glBegin(GL_QUADS);
+                glTexCoord2f(0, 0); glVertex2f(x, y);
+            	glTexCoord2f(0, 1); glVertex2f(x, y - height);
+	        	glTexCoord2f(1, 1); glVertex2f(x - width, y - height);
+            	glTexCoord2f(1, 0); glVertex2f(x - width, y);
+	        glEnd();
+        }
 
         glPopMatrix();
 
-        //glBindTexture(GL_TEXTURE_2D, 0);
+        glBindTexture(GL_TEXTURE_2D, 0);
     }
 }
 
@@ -194,7 +208,7 @@ void Player::update ()
 {
     y -= 0.5;
 }
-// ============================================================================
+// =========================================================================
 
 void Enemy::render ()
 {
@@ -238,7 +252,7 @@ void managerCollison ()
                     // 1) e1->Collision(e2) is the only collison call.
                     // 2) Check if the entity is a static entity.
                     e1->onCollision(e2);
-                    e2->onCollision(e1);           
+                    //e2->onCollision(e1);           
                 }
             }
         }

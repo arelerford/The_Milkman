@@ -8,8 +8,12 @@
 #include <stdio.h>      //For debugging w/ printf()
 #include <stdlib.h>     //For rand() and seed()
 #include "isaacL.h"
+#include "Player.h"
+#include <string>
 
 extern Screens screen;
+
+Player player ("Player", 5, 100, 100, 75, 100, false);
 
 void show_isaac_name(Rect *r)
 {
@@ -417,6 +421,9 @@ Level_1::Level_1()
 //	extern void gen_health(GLuint, Img);
 //	gen_health(health_tex, health_img);
 
+
+    player.loadImage("./images/player/stand_right.png");
+    player.showImage = true;
 };
 
 void Level_1::Display(Global *obj)
@@ -466,6 +473,8 @@ void Level_1::Display(Global *obj)
 		glPopMatrix();
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glDisable(GL_ALPHA_TEST);
+
+        player.render();
     }
 };
 
@@ -480,10 +489,15 @@ int Level_1::checkKey(int key)
         break;
 
         case XK_Left:
-
+            if (player.sflip == false)
+                player.flip();
+			player.move(-0.5, 0);
         break;
 
         case XK_Right:
+            if (player.sflip == true)
+                player.flip();
+			player.move(0.5, 0);
 
         break;
     }
