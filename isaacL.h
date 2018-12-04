@@ -127,6 +127,43 @@ public:
 	int  checkKey(int);
 };
 
+class Controls{
+public:
+        const char *name = "controls";
+	
+	 Image cloud_img[8] = {
+    "./images/startmenu/cloud1.jpg",
+    "./images/startmenu/cloud2.jpg",
+    "./images/startmenu/cloud3.jpg",
+    "./images/startmenu/cloud4.jpg",
+    "./images/startmenu/cloud5.jpg",
+    "./images/startmenu/cloud6.jpg",
+    "./images/startmenu/cloud7.jpg",
+    "./images/startmenu/cloud8.jpg"
+        };
+	
+	int cloud_num;
+	Cloud *clouds;
+	//Controls Images
+	Image controls_img[4] = {"./images/controls/arrows.png",
+                             "./images/controls/wasd.png",
+                             "./images/controls/movement.png",
+                             "./images/controls/shoot.png" };
+
+    //variables
+    bool display = true;
+
+	//textures
+	GLuint *controls_tex;
+	GLuint *cloud_tex;
+    //Methods
+    Controls();
+    void Display();
+	void initClouds();
+    void showClouds();	
+    int checkKey(int);
+};
+//////
 class Bottle {
 public:
 	// Images
@@ -261,11 +298,11 @@ public:
 	// Images
 	Image background_img = "./images/level1/levback.png";
 	Image foreground_img = "./images/level1/levfore.png";
-
+    Image health_img = "./images/player/milk_health.png";
 	// Textures
 	GLuint background_tex;
 	GLuint foreground_tex;
-
+    GLuint health_tex;
 	// Variables
 	bool    display;
 	int enemies_num;
@@ -318,8 +355,9 @@ struct Screens {
 	Level_1 *level_1;
 	Level_2 *level_2;
 	Credits *credits;
+	Controls *controls;
 	Player *player;
-	bool *displays[3];
+	bool *displays[4];
 	Screens() 
 	{
 		printf("FILE: %s\tLINE: %d\n", __FILE__, __LINE__);
@@ -330,16 +368,19 @@ struct Screens {
 		level_1 = new Level_1(player);
 		printf("FILE: %s\tLINE: %d\n", __FILE__, __LINE__);
 		level_2 = new Level_2(player);
-		printf("FILE: %s\tLINE: %d\n", __FILE__, __LINE__);
+		printf("FILE: %s\tLINE: %d\n", __FILE__, __LINE__);	
+		controls = new Controls();
+		printf("FILE: %s\tLINE: %d\n", __FILE__, __LINE__);	
 		credits = new Credits();
 		printf("FILE: %s\tLINE: %d\n", __FILE__, __LINE__);
 
 		displays[0] = &level_1->display;
-		displays[1] = &start->display;
-		displays[2] = &credits->display;
+		displays[3] = &start->display;
+		displays[2] = &credits->display; 
+		displays[1] = &controls->display;
 	}
 };
 
 void menuSelect(Screens, int*, int);
-
+void gotoStart(Screens screen);
 #endif

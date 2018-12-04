@@ -39,7 +39,7 @@ Global::Global()
 	// xres = 1350;
 	// yres = 750;
 	xres = 900;
-	yres = 500;
+	yres = 550;
 	 fps = 1.0 / 30;	//second per frame
 	memset(keys, 0, 65536);	
 }
@@ -360,9 +360,11 @@ int checkKeys(XEvent *e)
 
 	if (screen.start->display) {
 		return screen.start->checkKey(key);
-	} else if (screen.credits->display) {
-		return screen.credits->checkKey(key);
-	} else if (screen.level_1->display) {
+	} else if (screen.controls->display) {
+		return screen.controls->checkKey(key);
+    } else if (screen.credits->display) {
+        return screen.credits->checkKey(key);
+    } else if (screen.level_1->display) {
 		return screen.level_1->checkKey(key);
 	} else {
 		return 0;
@@ -379,6 +381,7 @@ void render(void)
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	screen.start->Display();
+    screen.controls->Display();
 	screen.credits->Display();
 	screen.level_1->Display();
 	screen.level_2->Display();

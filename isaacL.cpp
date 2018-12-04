@@ -311,9 +311,9 @@ int Start::checkKey(int key)
             return 1;
 
         case XK_Up:
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < 4; i++) {
                 if (opt[i]) {
-                    opt[(i+2) % 3] = 1;
+                    opt[(i+3) % 4] = 1;
                     opt[i] = 0;
                     break;
                 }
@@ -321,9 +321,9 @@ int Start::checkKey(int key)
             break;
 
         case XK_Down:
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < 4; i++) {
                 if (opt[i]) {
-                    opt[(i+1) % 3] = 1;
+                    opt[(i+1) % 4] = 1;
                     opt[i] = 0;
                     break;
                 }
@@ -331,11 +331,19 @@ int Start::checkKey(int key)
         break;
 
         case XK_Return:
-            menuSelect(screen, opt, opt_size);
+           /*	for (int i = 0; i < 4; i++) {
+       			if (opt[i]) {
+           		 *screen.displays[i] = true;
+        		}  
+				 else {
+            	*screen.displays[i] = false;
+       			}
+    		}*/ 
+            menuSelect(screen, opt, 4);
         break;
 
         case XK_space:
-            menuSelect(screen, opt, opt_size);
+            menuSelect(screen, opt, 4);
         break;
 
         case XK_r:
@@ -345,6 +353,116 @@ int Start::checkKey(int key)
     return 0;
 }
 
+Controls::Controls()
+{
+      clouds = new Cloud[NUM_CLOUDS];
+      cloud_num = sizeof(cloud_img) / sizeof(*cloud_img); 
+      cloud_tex = new GLuint[cloud_num];
+	  controls_tex = new GLuint;
+
+	    display = false;
+	 // restart = false;
+     
+    // Generate textures and bind images for clouds
+    for (int i = 0; i < cloud_num; i++) {
+        glGenTextures(1, &cloud_tex[i]);
+        glBindTexture(GL_TEXTURE_2D, cloud_tex[i]);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        unsigned char *new_img = buildAlphaData(&cloud_img[i]);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, cloud_img[i].width, cloud_img[i].height, 0,
+            GL_RGBA, GL_UNSIGNED_BYTE, new_img);
+        free(new_img);
+    }
+	initClouds();	
+
+	 //Generate options texture
+        for (int i = 0; i<4; i++){
+        glGenTextures(1, &controls_tex[i]);
+        glBindTexture(GL_TEXTURE_2D, controls_tex[i]);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        unsigned char *new_img = buildAlphaData(&controls_img[i]);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, controls_img[i].width, controls_img[i].height, 0,
+            GL_RGBA, GL_UNSIGNED_BYTE, new_img);
+        free(new_img);
+		}
+
+}
+void Controls::Display()
+{
+    if (display) {
+        //Clear the screen to light blue color
+	    float red =  78.0 / 255;
+        float green = 173.0 / 255;
+        float  blue = 245.0 / 255;
+        glClearColor(red, green, blue, 1);
+        glClear(GL_COLOR_BUFFER_BIT);
+        //show Clouds in background
+        showClouds();
+        //show controls images
+	extern void showcontrol_ops(int, int, GLuint);
+        // for(int i = 1; i <6; i++)
+
+
+        showcontrol_ops(200, 400, controls_tex[1]);		
+        showcontrol_ops(200, 200, controls_tex[0]);
+        Rect r;
+        r.left = gl.xres /  3;
+        r.bot  = gl.yres - 60;
+       // int pic_column = 2 * r.left;
+
+        extern void showopstext(Rect *);
+        showopstext(&r);
+    }
+};
+
+void Controls::showClouds()
+{
+    for (int i = 0; i < NUM_CLOUDS; i++) {        
+        int cloudX = clouds[i].getX();
+        int cloudY = clouds[i].getY();
+
+        if (cloudX > gl.xres) {
+            GLuint randTex = cloud_tex[rand() % cloud_num];
+            clouds[i].refreshX(randTex, gl.yres);
+        }
+        if (cloudY > gl.yres) {
+            GLuint randTex = cloud_tex[rand() % cloud_num];
+            clouds[i].refreshY(randTex, gl.xres);
+        }
+        clouds[i].draw();
+        clouds[i].move();
+    }
+}
+
+void Controls::initClouds()
+{
+    for (int i = 0; i < NUM_CLOUDS; i++) {
+        int randX = rand() % (gl.xres / SIZE_CLOUDS);
+        int randY = i % (gl.xres / SIZE_CLOUDS );
+        GLuint randTex = cloud_tex[rand() % cloud_num];
+        clouds[i].setAttr(randTex, randX, randY);
+    }
+}
+
+int Controls::checkKey(int key)
+{
+    switch (key) {
+        case XK_Escape:
+        {
+		   //gotoStart(screen);
+			//displays[0] = level_1->display
+				//	 [1] = start
+			// displays[2] = credits
+           int tmp[4] = {0, 0, 0, 1};
+			
+           menuSelect(screen, tmp, 4);
+        }
+        break;
+    }
+    return 0;
+};
 Credits::Credits()
 {
     team_num = sizeof(team_img) / sizeof(*team_img);
@@ -382,7 +500,7 @@ void Credits::Display()
         Rect r;
 
         r.left = gl.xres /  3;
-        r.bot  = gl.yres - 80;
+        r.bot  = gl.yres - 60;
         int pic_column = 2 * r.left;
         int index = 0;
 
@@ -404,12 +522,12 @@ void Credits::Display()
     }
 }
 
-int Credits::checkKey(int key)dw
+int Credits::checkKey(int key)
 {   
     switch (key) {
         case XK_Escape:
-            int tmp[3] = {0, 1, 0};
-            menuSelect(screen, tmp, 3);
+           int tmp[4] = {0, 0, 0, 1};
+           menuSelect(screen, tmp, 4);
         break;
     }
     return 0;
@@ -503,6 +621,11 @@ void Level_1::Display()
         glEnd();
         glPopMatrix();
         glBindTexture(GL_TEXTURE_2D, 0);
+        //---------------------------------------------------------------------
+        //Draw Health (Milk Bottles)
+           extern void show_health(int, int, GLuint);
+         for(int i = 1; i <6; i++)
+            show_health((50*i - 30), 570, health_tex); 
         //---------------------------------------------------------------------
         // Draw Dead Enemies
         for (int i = 0; i < enemies_num; i++) {
@@ -715,6 +838,9 @@ void menuSelect(Screens screen, int opt[], int size)
     }
 }
 
+/*void gotoStart(Screens screen){
+	*screen.displays[3] = true;
+}*/
 Bottle::Bottle()
 {
     direction = 0;
@@ -1294,7 +1420,7 @@ Enemy::Enemy()
     rand_diff = rand() % 4 + 11;
 
     // Display Variables
-    health = 5;
+    health = 2;
       near = false;
      stood = false;
      alive =  true;
