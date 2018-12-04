@@ -360,19 +360,12 @@ struct Screens {
 	bool *displays[4];
 	Screens() 
 	{
-		printf("FILE: %s\tLINE: %d\n", __FILE__, __LINE__);
 		start   = new Start();
-		printf("FILE: %s\tLINE: %d\n", __FILE__, __LINE__);
 		player  = new Player();
-		printf("FILE: %s\tLINE: %d\n", __FILE__, __LINE__);
 		level_1 = new Level_1(player);
-		printf("FILE: %s\tLINE: %d\n", __FILE__, __LINE__);
 		level_2 = new Level_2(player);
-		printf("FILE: %s\tLINE: %d\n", __FILE__, __LINE__);	
 		controls = new Controls();
-		printf("FILE: %s\tLINE: %d\n", __FILE__, __LINE__);	
 		credits = new Credits();
-		printf("FILE: %s\tLINE: %d\n", __FILE__, __LINE__);
 
 		displays[0] = &level_1->display;
 		displays[3] = &start->display;
