@@ -61,8 +61,7 @@ public:
     "./images/startmenu/cloud8.jpg"
 	};
 	int cloud_num = sizeof cloud_img / sizeof *(cloud_img);
-	Image text_img[4] = {
-        "./images/startmenu/mainmenu.png",
+	Image text_img[3] = {
         "./images/startmenu/levels.png",
         "./images/startmenu/credits.png",
         "./images/startmenu/controls.png"
@@ -76,7 +75,7 @@ public:
 
 	// Variables
 	bool display = true;
-	int opt[4] = { 1, 0, 0, 0 };
+	int opt[3] = { 1, 0, 0};
 	int opt_size = sizeof opt / sizeof *opt;
 
 	// Methods
