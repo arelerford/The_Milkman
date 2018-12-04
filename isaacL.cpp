@@ -626,10 +626,11 @@ void Level_1::Display()
         glBindTexture(GL_TEXTURE_2D, 0);
         //---------------------------------------------------------------------
         //Draw Health (Milk Bottles)
-           extern void show_health(int, int, GLuint);
+       /*    extern void show_health(int, int, GLuint);
          for(int i = 1; i <6; i++)
             show_health((50*i - 30), 570, health_tex); 
-        //---------------------------------------------------------------------
+       */ 
+	//---------------------------------------------------------------------
         // Draw Dead Enemies
         for (int i = 0; i < enemies_num; i++) {
             if (!enemies[i].alive && enemies[i].frame == frame) enemies[i].Display();
