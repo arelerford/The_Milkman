@@ -38,8 +38,8 @@ Global::Global()
 	logOpen();
 	// xres = 1350;
 	// yres = 750;
-	xres = 900;
-	yres = 550;
+	xres = 1800;
+	yres = 1000;
 	 fps = 1.0 / 30;	//second per frame
 	memset(keys, 0, 65536);	
 }
